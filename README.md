@@ -46,10 +46,21 @@ notes:
 The default username and password to login is 'admin' and '123456', which now are unchangeable at first run. After first login, they can be modified in the userface, that is realized in 'user setting'.
 There is also a default max Current value for the whole mesh, which is settled as 100A and can be changed in 'mesh setting'
 
+##### Instruction for Redis
+```
+For raspberry Pi:
+sudo nano /etc/redis/redis.conf
+find "bind 127.0.0.1 ::1"
+replace with "#bind 127.0.0.1 ::1"
+sudo service redis-server restart
+redis-server
+```
+
 ##### Compiles for development
 ```
 npm run dev
 ```
+notes: There is always an error about getting /favicon.ico with raspberry Pi. I have eliminated it on windows system. But it is still there on rasbian. But it can be ignored.
 
 ##### Compiles for production
 ```
