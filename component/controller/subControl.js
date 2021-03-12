@@ -1,4 +1,5 @@
 const {currentUpdate, connectUpdate, statusUpdate, getList, getInfo} = require('./dataControl')
+const {MQTT_CONF} = require('../../conf/configuration')
 var mqtt = require('mqtt')
 var noConnect = new Array()
 var connect = false
@@ -20,7 +21,7 @@ function onConnect (id, macADR) {
 
 // // every node has its own client to receive and update the currentvalue
 // function readCurrent (top, id, macADR) {
-//     var client = mqtt.connect('mqtt:192.168.2.109:1884')
+//     var client = mqtt.connect(MQTT_CONF)
 //     client.subscribe(top,{qos:1})
 //     client.on('message', function (topic,message) {
 //         var mesJson = JSON.parse(message)
@@ -33,9 +34,7 @@ function onConnect (id, macADR) {
 
 // one client reveive the data of all nodes and control
 function readCurrent () {
-    // var client = mqtt.connect('mqtt:192.168.2.109:1884')
-    var client = mqtt.connect('mqtt:192.168.5.1:1884')
-    // var client = mqtt.connect('mqtt:raspberrypi:1884')
+    var client = mqtt.connect(MQTT_CONF)
 
     // subscribe to all the nodes and start the connection check
     getList().then(meshList => {

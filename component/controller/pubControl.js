@@ -1,12 +1,9 @@
-// const { dbExec, escape } = require('../db/mysql')
-// const {getInfo} = require('./dataControl')
 var mqtt = require('mqtt')
+const {MQTT_CONF} = require('../../conf/configuration')
 
 // select the phases for the node
 function setPhase (macADR, Phases) {
-    // var client = mqtt.connect('mqtt:192.168.2.109:1884')
-    var client = mqtt.connect('mqtt:192.168.5.1:1884')
-    // var client = mqtt.connect('mqtt:raspberrypi:1884')
+    var client = mqtt.connect(MQTT_CONF)
     message = JSON.stringify(
         { "cmd": "avrsetpar",
           "avrpar": "phases",
@@ -17,9 +14,7 @@ function setPhase (macADR, Phases) {
 }
 
 function setMaxCur (macADR, maxCur) {
-    // var client = mqtt.connect('mqtt:192.168.2.109:1884')
-    var client = mqtt.connect('mqtt:192.168.5.1:1884')
-    // var client = mqtt.connect('mqtt:raspberrypi:1884')
+    var client = mqtt.connect(MQTT_CONF)
     message = JSON.stringify(
         { "cmd": "avrsetpar",
           "avrpar": "smaxcur",
@@ -31,9 +26,7 @@ function setMaxCur (macADR, maxCur) {
 
 // function to press button B, only for test
 function pressButtonB (macADR) {
-    // var client = mqtt.connect('mqtt:192.168.2.109:1884')
-    var client = mqtt.connect('mqtt:192.168.5.1:1884')
-    // var client = mqtt.connect('mqtt:raspberrypi:1884')
+    var client = mqtt.connect(MQTT_CONF)
     message = JSON.stringify(
         { "cmd": "avrsetpar",
           "avrpar": "opbutton",

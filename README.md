@@ -10,9 +10,6 @@ npm v6.14.10 (compatibility of lower version hasn't been tested)
 mysql v8.0.22(at least v5.5.53) or MariaDB v10.0.28 (for rasbian) 
 redis v5.0.3
 ```
-notes:
-before setting up project, 
-the database "loadstation" should be created with the source file "loadstation.sql", which is in folder "conf"
 
 ##### Project setup
 ```
@@ -24,7 +21,7 @@ npm install --save-dev pm2
 ##### Instruction for source the database
 ```
 mysql -uroot -proot 
-(default user and password, which can be changed in database.js in folder conf)
+(default user and password, which can be changed in configuration.js in folder 'conf')
 
 Command for MariaDB:
 use mysql;

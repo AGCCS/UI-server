@@ -16,6 +16,8 @@ if (env === 'dev') {
         port: 6379,
         host: '127.0.0.1'
     }
+    
+    MQTT_CONF = 'mqtt:192.168.2.109:1884'
 }
 
 if (env === 'production') {
@@ -31,9 +33,12 @@ if (env === 'production') {
         port: 6379,
         host: '127.0.0.1'
     }
+
+    MQTT_CONF = 'mqtt:192.168.2.109:1884'
 }
 
 module.exports = {
     MYSQL_CONF,
-    REDIS_CONF
+    REDIS_CONF,
+    MQTT_CONF
 }
