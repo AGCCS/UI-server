@@ -13,6 +13,7 @@ function setPhase (macADR, Phases) {
     client.end
 }
 
+// set max Current for the node
 function setMaxCur (macADR, maxCur) {
     var client = mqtt.connect(MQTT_CONF)
     message = JSON.stringify(

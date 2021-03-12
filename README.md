@@ -1,6 +1,11 @@
 ## express-api-server for project AGCCS-CTRL22
 This programm aims to develop the server and API-interface for the user interface of project AGCCS-CTRL22. It also contains the compiled user interface, which is running on port 80.
 
+The whole work is developed based on nodejs and uses express as web framework. Now it contains the following 3 main functions:
+
+1. Contact nodes with MQTT. This function is mainly compiled by pubcontrol.js, subcontrol.js and initcontrol.js. The needed mqtt server should be created by raspberry Pi with mosquitto (default adrress is 192.168.5.1 and port is 1884, which is defined in configuration.js in forlder 'conf').
+2. Read data from the database or store data.
+
 ### Guidelines for Installation
 
 ##### Development environment
@@ -14,9 +19,8 @@ redis v5.0.3
 ##### Project setup
 ```
 npm install
-npm install --save-dev cross-env
-npm install --save-dev nodemon
-npm install --save-dev pm2
+npm install --save cross-env
+npm install --save pm2
 ```
 ##### Instruction for source the database
 ```
@@ -37,9 +41,12 @@ use loadstaion;
 source XXX/conf/loadstaion.sql; (replace XXX with proper path)
 
 ```
+notes: 
+The default username and password to login is 'admin' and '123456', which now are not unchangeable at first run. After first login, they can be modified in the userface, that is realized in 'user setting'.
 
 ##### Compiles for development
 ```
+npm install --save-dev nodemon
 npm run dev
 ```
 
