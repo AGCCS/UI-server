@@ -17,8 +17,25 @@ the database "loadstation" should be created with the source file "loadstation.s
 ##### Project setup
 ```
 npm install
+npm install --save-dev cross-env
 npm install --save-dev nodemon
 npm install --save-dev pm2
+```
+##### Instruction for source the database
+```
+mysql -uroot -proot 
+(default user and password, which can be changed in database.js in folder conf)
+
+Command for MariaDB:
+use mysql;
+update user set authentication_string=password('root'),plugin='mysql_native_password' where user='root';
+create database loadstaion;
+use loadstaion;
+source XXX/conf/loadstaion.sql; (replace XXX with proper path)
+
+Command for mysql:
+alter user 'root'@'localhost' identified with mysql_native_password by '123456';
+
 ```
 
 ##### Compiles for development
