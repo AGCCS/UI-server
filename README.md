@@ -20,6 +20,7 @@ redis v5.0.3
 ```
 npm install
 npm install --save cross-env
+npm install --save-dev nodemon
 npm install --save pm2
 ```
 ##### Instruction for source the database
@@ -43,10 +44,10 @@ source XXX/conf/loadstaion.sql; (replace XXX with proper path)
 ```
 notes: 
 The default username and password to login is 'admin' and '123456', which now are unchangeable at first run. After first login, they can be modified in the userface, that is realized in 'user setting'.
+There is also a default max Current value for the whole mesh, which is settled as 100A and can be changed in 'mesh setting'
 
 ##### Compiles for development
 ```
-npm install --save-dev nodemon
 npm run dev
 ```
 
