@@ -42,7 +42,7 @@ source XXX/conf/loadstaion.sql; (replace XXX with proper path)
 
 ```
 notes: 
-The default username and password to login is 'admin' and '123456', which now are not unchangeable at first run. After first login, they can be modified in the userface, that is realized in 'user setting'.
+The default username and password to login is 'admin' and '123456', which now are unchangeable at first run. After first login, they can be modified in the userface, that is realized in 'user setting'.
 
 ##### Compiles for development
 ```
