@@ -35,6 +35,9 @@ source XXX/conf/loadstaion.sql; (replace XXX with proper path)
 
 Command for mysql:
 alter user 'root'@'localhost' identified with mysql_native_password by '123456';
+create database loadstaion;
+use loadstaion;
+source XXX/conf/loadstaion.sql; (replace XXX with proper path)
 
 ```
 
