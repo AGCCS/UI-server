@@ -9,7 +9,7 @@ if (env === 'dev') {
         user: 'root',
         password: 'root',
         port: '3306',
-        database: 'loadstation'
+        database: 'chargingpark'
     }
 
     REDIS_CONF = {
@@ -26,7 +26,7 @@ if (env === 'production') {
         user: 'root',
         password: 'root',
         port: '3306',
-        database: 'loadstation'
+        database: 'chargingpark'
     }
 
     REDIS_CONF = {

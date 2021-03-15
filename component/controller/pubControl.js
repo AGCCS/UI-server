@@ -9,8 +9,10 @@ function setPhase (macADR, Phases) {
           "avrpar": "phases",
           "avrval": Phases }
     )
-    client.publish('/DEMESH/'+macADR+'/control', message, {qos:1})
-    client.end
+    client.on('connect', function () {
+        client.publish('/DEMESH/'+macADR+'/control', message, {qos:1})
+        client.end()
+    })
 }
 
 // set max Current for the node
@@ -21,8 +23,10 @@ function setMaxCur (macADR, maxCur) {
           "avrpar": "smaxcur",
           "avrval": maxCur*10 }
     )
-    client.publish('/DEMESH/'+macADR+'/control', message, {qos:1})
-    client.end
+    client.on('connect', function () {
+        client.publish('/DEMESH/'+macADR+'/control', message, {qos:1})
+        client.end()
+    })
 }
 
 // function to press button B, only for test
@@ -33,12 +37,43 @@ function pressButtonB (macADR) {
           "avrpar": "opbutton",
           "avrval": 1 }
     )
-    client.publish('/DEMESH/'+macADR+'/control', message, {qos:1})
-    client.end
+
+    client.on('connect', function () {
+        client.publish('/DEMESH/'+macADR+'/control', message, {qos:1})
+        client.end()
+    })
+}
+
+function Blink (macADR) {
+    var client = mqtt.connect(MQTT_CONF)
+    message = JSON.stringify(
+        { "cmd": "avrsetpar",
+          "avrpar": "blinks",
+          "avrval": 10 }
+    )
+    client.on('connect', function () {
+        client.publish('/DEMESH/'+macADR+'/control', message, {qos:1})
+        client.end()
+    })
+}
+
+function noBlink (macADR) {
+    var client = mqtt.connect(MQTT_CONF)
+    message = JSON.stringify(
+        { "cmd": "avrsetpar",
+          "avrpar": "blinks",
+          "avrval": 0 }
+    )
+    client.on('connect', function () {
+        client.publish('/DEMESH/'+macADR+'/control', message, {qos:1})
+        client.end()
+    })
 }
 
 module.exports = {
     setPhase,
     pressButtonB,
-    setMaxCur
+    setMaxCur,
+    Blink,
+    noBlink
 }

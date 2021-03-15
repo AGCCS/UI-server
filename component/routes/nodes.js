@@ -5,7 +5,7 @@ const { getNodesStatus,
         renameNode, 
         getNodesList,
         changeNodeSetting} = require('../controller/nodeControl')
-const {pressButtonB} = require('../controller/pubControl')
+const {pressButtonB, Blink, noBlink} = require('../controller/pubControl')
 
 /* GET nodes listing. */
 router.get('/list', (req, res, next) => {
@@ -71,6 +71,20 @@ router.put('/status',(req, res, next) => {
 router.put('/buttonB', (req, res, next)=> {
   const {macADR} = req.body
   pressButtonB(macADR)
+  return res.json( new SuccessModel({'msg': 'successfully pressed button B remotely', 'status': 200}))
+});
+
+// function to blink the node
+router.put('/Blink', (req, res, next)=> {
+  const {macADR} = req.body
+  Blink(macADR)
+  return res.json( new SuccessModel({'msg': 'successfully pressed button B remotely', 'status': 200}))
+});
+
+// function to stop blinking the node
+router.put('/noBlink', (req, res, next)=> {
+  const {macADR} = req.body
+  noBlink(macADR)
   return res.json( new SuccessModel({'msg': 'successfully pressed button B remotely', 'status': 200}))
 });
 

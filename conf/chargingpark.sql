@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.22, for Win64 (x86_64)
 --
--- Host: localhost    Database: loadstation
+-- Host: localhost    Database: chargingpark
 -- ------------------------------------------------------
 -- Server version	8.0.22
 
@@ -56,18 +56,25 @@ DROP TABLE IF EXISTS `nodestatus`;
 CREATE TABLE `nodestatus` (
   `id` int NOT NULL AUTO_INCREMENT,
   `macADR` varchar(18) DEFAULT NULL,
+  `nodeName` varchar(25) DEFAULT NULL,
   `workStatus` int DEFAULT NULL,
   `maxCur` int DEFAULT NULL,
   `cmaxCur` int DEFAULT NULL,
   `workmode` varchar(10) DEFAULT 'normal',
   `connect` tinyint DEFAULT '0',
-  `nodeName` varchar(25) DEFAULT NULL,
   `Cur1` int DEFAULT NULL,
   `Cur2` int DEFAULT NULL,
   `Cur3` int DEFAULT NULL,
   `Phases` int DEFAULT NULL,
+  `Parent` varchar(24) DEFAULT NULL,
+  `Rssi` int DEFAULT NULL,
+  `Layer` int DEFAULT NULL,
+  `Plat` int DEFAULT NULL,
+  `Version` varchar(8) DEFAULT NULL,
+  `Board` varchar(45) DEFAULT NULL,
+  `avrVer` varchar(8) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -113,4 +120,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-03-09 21:56:38
+-- Dump completed on 2021-03-15  1:28:18

@@ -1,5 +1,5 @@
 const { dbExec, escape } = require('../db/mysql')
-const {scanMesh} = require('./initControl')
+// const {scanMesh} = require('./initControl')
 
 // function to intialize the mesh, scan the mesh 30s to register all nodes
 const meshInit = () => {
