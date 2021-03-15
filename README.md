@@ -31,15 +31,15 @@ mysql -uroot -proot
 Command for MariaDB:
 use mysql;
 update user set authentication_string=password('root'),plugin='mysql_native_password' where user='root';
-create database loadstaion;
-use loadstaion;
-source XXX/conf/loadstaion.sql; (replace XXX with proper path)
+create database chargingpark;
+use chargingpark;
+source XXX/conf/chargingpark.sql; (replace XXX with proper path)
 
 Command for mysql:
 alter user 'root'@'localhost' identified with mysql_native_password by '123456';
-create database loadstaion;
-use loadstaion;
-source XXX/conf/loadstaion.sql; (replace XXX with proper path)
+create database chargingpark;
+use chargingpark;
+source XXX/conf/chargingpark.sql; (replace XXX with proper path)
 
 ```
 notes: 
