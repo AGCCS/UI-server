@@ -32,4 +32,13 @@ router.post('/setting', (req, res, next) => {
 })
 });
 
+/* initialize the whole mesh. */
+router.post('/init', (req, res, next) => {
+  meshInit().then(val => {
+    if (val) {
+      return res.json( new SuccessModel({'msg': 'successfully initialized the mesh', 'status': 202})
+    )}
+  })
+});
+
 module.exports = router;
