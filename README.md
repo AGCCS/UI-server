@@ -4,7 +4,7 @@ This programm aims to develop the server and API-interface for the user interfac
 The whole work is developed based on nodejs and uses express as web framework. Now it contains the following 3 main functions:
 
 1. Contact nodes with MQTT. This function is mainly compiled by pubcontrol.js, subcontrol.js and initcontrol.js. The needed mqtt server should be created by raspberry Pi with mosquitto (default adrress is 192.168.5.1 and port is 1884, which is defined in configuration.js in forlder 'conf').
-2. Read data from the database or store data.
+2. Read data and information of node from the database or store data and imformation that is sent by nodes via mqtt.
 
 ### Guidelines for Installation
 
