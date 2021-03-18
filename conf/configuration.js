@@ -19,7 +19,7 @@ if (env === 'dev') {
     
     MQTT_CONF = 'mqtt:192.168.2.109:1884'
     jwtKey = 'N27#K$5m_P[C'
-    dirName = 'D:\\vue\\Git\\UI-server\\public'
+    dirName = '/home/pi/Loadstation/UI-server-master/public'
 }
 
 if (env === 'production') {
@@ -38,7 +38,7 @@ if (env === 'production') {
 
     MQTT_CONF = 'mqtt:192.168.2.109:1884'
     jwtKey = 'N27#K$5m_P[C'
-    dirName = 'D:\\vue\\Git\\UI-server\\public'
+    dirName = '/home/pi/Loadstation/UI-server-master/public'
 }
 
 module.exports = {

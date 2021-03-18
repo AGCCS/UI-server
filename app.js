@@ -23,7 +23,7 @@ var app = express();
 // front-end
 app.use(compression())
 app.use(express.static('./dist'))
-app.listen(80, '0.0.0.0')
+app.listen(8071, '0.0.0.0')
 
 app.use(cors)
 

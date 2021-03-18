@@ -14,16 +14,6 @@ router.post('/', (req, res, next) => {
                 return new ErrorModel({'msg': err, 'status': 400})
             } 
             else{
-                var client = mqtt.connect(MQTT_CONF)
-                message = JSON.stringify(
-                    { "cmd": "upgrade",
-                      "version": "6.3",
-                      "board": "m5stick" }
-                )
-                client.on('connect', function () {
-                    client.publish('/DEMESH/root/control', message, {qos:1})
-                    client.end()
-                })
                 return res.json( new SuccessModel({'msg': 'File ' + req.files[0].originalname +' uploaded successfully', 'status': 202})
             )}
         })
