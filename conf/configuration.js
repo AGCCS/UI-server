@@ -18,6 +18,8 @@ if (env === 'dev') {
     }
     
     MQTT_CONF = 'mqtt:192.168.2.109:1884'
+    jwtKey = 'N27#K$5m_P[C'
+    dirName = 'D:\\vue\\Git\\UI-server\\public'
 }
 
 if (env === 'production') {
@@ -35,10 +37,14 @@ if (env === 'production') {
     }
 
     MQTT_CONF = 'mqtt:192.168.2.109:1884'
+    jwtKey = 'N27#K$5m_P[C'
+    dirName = 'D:\\vue\\Git\\UI-server\\public'
 }
 
 module.exports = {
     MYSQL_CONF,
     REDIS_CONF,
-    MQTT_CONF
+    MQTT_CONF,
+    jwtKey,
+    dirName
 }

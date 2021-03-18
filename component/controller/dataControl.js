@@ -132,7 +132,7 @@ const infoUpdate = (id, macADR, Parent = null,
         Layer = escape(Layer)
         sql+=`Layer=${Layer}, `
     }
-    if (Plat) {
+    if (Plat!==null) {
         Plat = escape(Plat)
         sql+=`Plat=${Plat}, `
     }
@@ -149,7 +149,6 @@ const infoUpdate = (id, macADR, Parent = null,
         sql+=`avrVer=${avrVer}, `
     }
     sql += `macADR=${macADR} where id=${id};`
-    console.log(sql)
     return dbExec(sql).then(updateData =>{
         if (updateData.affectedRows > 0) {
             return true 

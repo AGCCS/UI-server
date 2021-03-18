@@ -4,7 +4,7 @@ const {MQTT_CONF} = require('../../conf/configuration')
 // select the phases for the node
 function setPhase (macADR, Phases) {
     var client = mqtt.connect(MQTT_CONF)
-    message = JSON.stringify(
+    var message = JSON.stringify(
         { "cmd": "avrsetpar",
           "avrpar": "phases",
           "avrval": Phases }
@@ -18,7 +18,7 @@ function setPhase (macADR, Phases) {
 // set max Current for the node
 function setMaxCur (macADR, maxCur) {
     var client = mqtt.connect(MQTT_CONF)
-    message = JSON.stringify(
+    var message = JSON.stringify(
         { "cmd": "avrsetpar",
           "avrpar": "smaxcur",
           "avrval": maxCur*10 }
@@ -32,7 +32,7 @@ function setMaxCur (macADR, maxCur) {
 // function to press button B, only for test
 function pressButtonB (macADR) {
     var client = mqtt.connect(MQTT_CONF)
-    message = JSON.stringify(
+    var message = JSON.stringify(
         { "cmd": "avrsetpar",
           "avrpar": "opbutton",
           "avrval": 1 }
@@ -46,7 +46,7 @@ function pressButtonB (macADR) {
 
 function Blink (macADR) {
     var client = mqtt.connect(MQTT_CONF)
-    message = JSON.stringify(
+    var message = JSON.stringify(
         { "cmd": "avrsetpar",
           "avrpar": "blinks",
           "avrval": 10 }
@@ -59,10 +59,10 @@ function Blink (macADR) {
 
 function noBlink (macADR) {
     var client = mqtt.connect(MQTT_CONF)
-    message = JSON.stringify(
+    var message = JSON.stringify(
         { "cmd": "avrsetpar",
           "avrpar": "blinks",
-          "avrval": 0 }
+          "avrval": 1 }
     )
     client.on('connect', function () {
         client.publish('/DEMESH/'+macADR+'/control', message, {qos:1})
