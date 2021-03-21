@@ -1,17 +1,17 @@
-const { dbExec, escape } = require('../db/mysql')
+const {queryData, dataExec, escape} = require('../db/sqlite')
 const {setPhase, setMaxCur} = require('./pubControl')
 
 // // function to register the mac address and id
 const macReg = (macADR) => {
     macADR = escape(macADR)
     let sql = `select * from nodestatus where macADR = ${macADR};`
-    return dbExec(sql).then(rows =>{
+    return queryData(sql).then(rows =>{
         if(rows[0]){
             return false  // macADR is already registered
         }
         sql = `insert into nodestatus (macADR, workmode) values (${macADR}, 'auto');`
-        return dbExec(sql).then(updateData =>{
-            if (updateData.affectedRows > 0) {
+        return dataExec(sql).then(updateData =>{
+            if (updateData.changes > 0) {
                 return true
             }
             return false
@@ -22,7 +22,7 @@ const macReg = (macADR) => {
 // get the list of all nodes
 const getList = () => {
     let sql = `select id, macADR from nodestatus;`
-    return dbExec(sql).then(rows =>{
+    return queryData(sql).then(rows =>{
         if(!rows[0]){
             return false  // no info from database
         }
@@ -34,7 +34,7 @@ const getList = () => {
 const getInfo = (macADR) => {
     macADR = escape(macADR)
     let sql = `select * from nodestatus where macADR = ${macADR};`
-    return dbExec(sql).then(rows =>{
+    return queryData(sql).then(rows =>{
         if(rows[0]){
             return rows
         }
@@ -53,9 +53,9 @@ const currentUpdate = (id, macADR ,maxCur, cmaxCur, phases, cur1, cur2, cur3) =>
     cur2 = escape(cur2/10)
     cur3 = escape(cur3/10)
     let sql = `update nodestatus set cmaxCur = ${cmaxCur}, Phases = ${phases},
-    cur1 = ${cur1}, cur2 = ${cur2}, cur3 = ${cur3}, maxCur = ${maxCur} where id = ${id} and macADR = ${macADR}`
-    return dbExec(sql).then(updateData =>{
-        if (updateData.affectedRows > 0) {
+    cur1 = ${cur1}, cur2 = ${cur2}, cur3 = ${cur3}, maxCur = ${maxCur} where id = ${id} and macADR = ${macADR};`
+    return dataExec(sql).then(updateData =>{
+        if (updateData.changes > 0) {
             return true 
         }
         return false // id and macADR do not match or no connection(no currentvalue received)
@@ -76,7 +76,7 @@ const connectUpdate = (id, macADR, connect=false) => {
         connect = escape(connect)
         sql = `update nodestatus set connect = ${connect}, workmode = 'auto', Phases = 0, maxCur = 0, workStatus = 0, cur1 =0, cur2 = 0, cur3 =0 where id = ${id} and macADR = ${macADR};`
     }
-    dbExec(sql)
+    dataExec(sql)
 }
 
 const statusUpdate = (id, macADR, workStatus) => {
@@ -88,16 +88,16 @@ const statusUpdate = (id, macADR, workStatus) => {
         }
         let sql = `update nodestatus set workStatus = ${escape(workStatus)} where id = ${id} and macADR = ${escape(macADR)};`
         if(rows[0].workStatus === workStatus) {
-            return dbExec(sql).then(updateData => {
-                if(updateData.affectedRows) {
+            return dataExec(sql).then(updateData => {
+                if(updateData.changes) {
                     return true
                 }
                 return false // no connection to database
             }) // make no change and return if workStatus do not change
         }
 
-        return dbExec(sql).then(updateData => {
-            if(updateData.affectedRows) {
+        return dataExec(sql).then(updateData => {
+            if(updateData.changes) {
                 sumManCur().then(val => {
                     if(val) {
                         autoWork().then(val => {
@@ -149,8 +149,8 @@ const infoUpdate = (id, macADR, Parent = null,
         sql+=`avrVer=${avrVer}, `
     }
     sql += `macADR=${macADR} where id=${id};`
-    return dbExec(sql).then(updateData =>{
-        if (updateData.affectedRows > 0) {
+    return dataExec(sql).then(updateData =>{
+        if (updateData.changes > 0) {
             return true 
         }
         return false // id and macADR do not match or no connection(no currentvalue received)
@@ -163,11 +163,11 @@ const sumManCur = () => {
     var usedCur2 = 0
     var usedCur3 = 0
     let sql = `select id, macADR, maxCur, Phases from nodestatus where workmode='manual' and connect = 1 and workStatus!=0 order by id;`
-    return dbExec(sql).then(rows => {
+    return queryData(sql).then(rows => {
         if(!rows[0]){ // no manual node
             sql = `update meshsetting set usedCur1 = '${usedCur1}', usedCur2 = '${usedCur2}', usedCur3 = '${usedCur3}';`
-            return dbExec(sql).then(updateData => {
-                if (updateData.affectedRows > 0) {
+            return dataExec(sql).then(updateData => {
+                if (updateData.changes > 0) {
                     return true
                 }
                 return false // no connection
@@ -196,8 +196,8 @@ const sumManCur = () => {
             }
         }
         sql = `update meshsetting set usedCur1 = '${usedCur1}', usedCur2 = '${usedCur2}', usedCur3 = '${usedCur3}';`
-        return dbExec(sql).then(updateData => {
-            if (updateData.affectedRows > 0) {
+        return dataExec(sql).then(updateData => {
+            if (updateData.changes > 0) {
                 return true
             }
             return false // no connection with database
@@ -208,7 +208,7 @@ const sumManCur = () => {
 const autoWork = () => {
     return calRemain().then(remain => {
         let sql = `select id, macADR, cmaxCur from nodestatus where workmode='auto' and connect = 1 and workStatus != 0 order by cmaxCur;`
-        return dbExec(sql).then(rows => {
+        return queryData(sql).then(rows => {
             // calculate the available average Current and number of cars in auto mode
             var autoNum = rows.length
 
@@ -230,7 +230,7 @@ const autoWork = () => {
 // calculate the available remaining current and remaining phases
 const calRemain = () => {
     let sql = `select * from meshsetting;`
-    return dbExec(sql).then(rows => {
+    return queryData(sql).then(rows => {
         if(!rows[0]){
             return false // no connection with database
         }

@@ -1,4 +1,4 @@
-const { dbExec, escape } = require('../db/mysql')
+const {queryData, dataExec, escape} = require('../db/sqlite')
 const {setPhase, setMaxCur} = require('./pubControl')
 const {sumManCur, calRemain, autoWork } = require('./dataControl')
 const {readAllInfo} = require('./subControl')
@@ -9,7 +9,7 @@ const getNodesStatus = (id = {}) => {
     let sql = `select * from nodestatus `
     if (id) {
         sql += `where id = ${id};`
-        return dbExec(sql).then(rows =>{
+        return queryData(sql).then(rows =>{
             if(rows[0]){
                 return rows[0]  // wrong password -> data is null
             }
@@ -28,15 +28,19 @@ const getNodesList = (id = {}) => {
     id = escape(id)
     if (id) {
         sql += `where id = ${id};`
-        return dbExec(sql).then(rows =>{
-            if(rows[0]){
+        return queryData(sql).then(rows =>{
+            if (rows[0]) {
                 return rows[0]  // wrong password -> data is null
             }
         })
     }
     sql += `order by id;`
     // return promise object 
-    return dbExec(sql)
+    return queryData(sql).then(rows => {
+        if (rows[0]) {
+            return rows
+        }
+    })
 }
 
 // function to put the name of node into database
@@ -45,8 +49,8 @@ const renameNode = (id, nodeName = {})  => {
     nodeName = escape(nodeName)
     const sql = `update nodestatus set nodeName=${nodeName} where id=${id};`  
     // return promise object 
-    return dbExec(sql).then(updateData =>{
-        if (updateData.affectedRows > 0) {
+    return dataExec(sql).then(updateData =>{
+        if (updateData.changes > 0) {
             return true
         }
         return false
@@ -64,14 +68,14 @@ const changeNodeSetting = (id, macADR, maxCur = null, workmode = null, workStatu
     workmode = escape(workmode)
     
     let sql = `select connect from nodestatus where id= ${id}`
-    return dbExec(sql).then(rows => {
+    return queryData(sql).then(rows => {
         if (!rows[0].connect) {
             return false
         }
         // update the workmode and maxCur in database at first
         sql = `update nodestatus set workmode=${workmode}, maxCur = ${escape(maxCur)} where id= ${id};`
-        return dbExec(sql).then(updateData =>{
-            if (updateData.affectedRows > 0) {
+        return dataExec(sql).then(updateData =>{
+            if (updateData.changes > 0) {
                 setPhase(macADR, Phases)
                 return sumManCur().then(val =>{
                     if(!val) {
@@ -86,8 +90,8 @@ const changeNodeSetting = (id, macADR, maxCur = null, workmode = null, workStatu
                         Phases = escape(Phases)
                         maxCur = escape(maxCur)
                         sql = `update nodestatus set maxCur=${maxCur}, workStatus=${workStatus}, workmode=${workmode}, Phases=${Phases} where id=${id};`
-                        return dbExec(sql).then(updateData =>{
-                            if (updateData.affectedRows > 0) {
+                        return dataExec(sql).then(updateData =>{
+                            if (updateData.changes > 0) {
                                 return autoWork().then(val => {
                                     if(val) {
                                         return true
