@@ -14,7 +14,6 @@ The whole work is developed based on nodejs and uses express as web framework. N
 ```
 nodejs v14.15.3
 npm v6.14.10 (compatibility of lower version hasn't been tested)
-mysql v8.0.22(at least v5.5.53) or MariaDB v10.0.28 (for rasbian) 
 redis v5.0.3
 ```
 
@@ -25,28 +24,6 @@ npm install --save cross-env
 npm install --save-dev nodemon
 npm install --save pm2
 ```
-##### Instruction for source the database
-```
-mysql -uroot -proot 
-(default user and password, which can be changed in configuration.js in folder 'conf')
-
-Command for MariaDB:
-use mysql;
-update user set authentication_string=password('root'),plugin='mysql_native_password' where user='root';
-create database chargingpark;
-use chargingpark;
-source XXX/conf/chargingpark.sql; (replace XXX with proper path)
-
-Command for mysql:
-alter user 'root'@'localhost' identified with mysql_native_password by '123456';
-create database chargingpark;
-use chargingpark;
-source XXX/conf/chargingpark.sql; (replace XXX with proper path)
-
-```
-notes: 
-The default username and password to login is 'admin' and '123456', which now are unchangeable at first run. After first login, they can be modified in the userface, that is realized in 'user setting'.
-There is also a default max Current value for the whole mesh, which is settled as 100A and can be changed in 'mesh setting'
 
 ##### Instruction for Redis
 ```
