@@ -59,7 +59,7 @@ DB.SqliteDB.prototype.close = function(){
     DB.db.close();
 };
 
-var dbFile = __dirname+"\\dbFile/chargingpark.db"
+var dbFile = __dirname+"/dbFile/chargingpark.db"
 dbExist = fs.existsSync(dbFile);
 var chargingpark = new DB.SqliteDB(dbFile)
 
