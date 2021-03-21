@@ -3,7 +3,10 @@ const {queryData, dataExec, escape} = require('../db/sqlite')
 // function to intialize the mesh, scan the mesh 30s to register all nodes
 const meshInit = () => {
     let sql =`delete from nodestatus;`
-    return dbExec(sql).then(val => {
+    return dataExec(sql).then(updateData => {
+        if (updateData.changes <= 0) {
+            return false
+        }
         return true
     })
 }
