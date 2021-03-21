@@ -17,7 +17,7 @@ const getNodesStatus = (id = {}) => {
     }
     sql += `order by id;`
     // return promise object 
-    return dbExec(sql)
+    return queryData(sql)
 }
 
 // function to get nodelist from database
