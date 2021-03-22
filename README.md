@@ -21,6 +21,7 @@ redis v5.0.3
 ```
 npm install
 npm install --save cross-env
+npm install --save slite3
 npm install --save-dev nodemon
 npm install --save pm2
 ```
