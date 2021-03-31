@@ -20,7 +20,7 @@ router.post('/', (req, res, next) => {
     })
 });
 
-router.post('/firmware', (req, res, next) => {
+router.post('/ESP32', (req, res, next) => {
     const board = req.body.Board
     const ver = req.body.Version
     var client = mqtt.connect(MQTT_CONF)
@@ -32,8 +32,36 @@ router.post('/firmware', (req, res, next) => {
     client.on('connect', function () {
         client.publish('/DEMESH/root/control', message, {qos:1})
         client.end()
-        })
+    })
     return res.json( new SuccessModel({'msg': 'ESP32 will download the Firmaware "'+board+'" v'+ver+' now.', 'status': 202})
+    )
+});
+
+router.post('/AVR', (req, res, next) => {
+    const fileName = req.body.fileName
+    const macADR = req.body.macADR
+    const macAdress = req.body.macAdress
+    var client = mqtt.connect(MQTT_CONF)
+    client.subscribe(('/DEMESH/'+macADR+'/acknowledge', {qos:1}))
+    var message = JSON.stringify(
+            { "dst": macADR,
+              "cmd": "avrota",
+              "state": "recimg"
+            })
+              
+    client.on('connect', function () {
+        client.publish('/DEMESH/root/control', message, {qos:1})
+        client.end()
+    })
+    client.on('message', function () {
+        var mesJson = JSON.parse(message)
+        if (mesJson.mtype === 'avrota') {
+            if(mesJson.state === 'recimg') {
+                return
+            }
+        }
+    })
+    return res.json( new SuccessModel({'msg': 'Node ' + macADR + 'will download the Firmaware ' + fileName + 'now.', 'status': 202})
     )
 });
 
