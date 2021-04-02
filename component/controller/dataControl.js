@@ -46,8 +46,8 @@ const getInfo = (macADR) => {
 const currentUpdate = (id, macADR ,maxCur, cmaxCur, phases, cur1, cur2, cur3) => {
     id = escape(id)
     macADR = escape(macADR)
-    maxCur = escape(maxCur/10)
-    cmaxCur = escape(cmaxCur/10)
+    maxCur = maxCur < 0 ? escape(0) : escape(maxCur/10)
+    cmaxCur = cmaxCur < 0 ? escape(0) : escape(cmaxCur/10)
     phases = escape(phases)
     cur1 = cur1 < 0 ? escape(0) : escape(cur1/10)
     cur2 = cur2 < 0 ? escape(0) : escape(cur2/10)

@@ -11,7 +11,7 @@ if (env === 'dev') {
     
     MQTT_CONF = 'mqtt:192.168.2.109:1884'
     jwtKey = 'N27#K$5m_P[C'
-    dirName = '/home/pi/Loadstation/UI-server-master/public'
+    dirName = 'D:\\vue\\Git\\UI-server\\public'
 }
 
 if (env === 'production') {
