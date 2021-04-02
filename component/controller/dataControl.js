@@ -49,9 +49,9 @@ const currentUpdate = (id, macADR ,maxCur, cmaxCur, phases, cur1, cur2, cur3) =>
     maxCur = escape(maxCur/10)
     cmaxCur = escape(cmaxCur/10)
     phases = escape(phases)
-    cur1 = escape(cur1/10)
-    cur2 = escape(cur2/10)
-    cur3 = escape(cur3/10)
+    cur1 = cur1 < 0 ? escape(0) : escape(cur1/10)
+    cur2 = cur2 < 0 ? escape(0) : escape(cur2/10)
+    cur3 = cur3 < 0 ? escape(0) : escape(cur3/10)
     let sql = `update nodestatus set cmaxCur = ${cmaxCur}, Phases = ${phases},
     cur1 = ${cur1}, cur2 = ${cur2}, cur3 = ${cur3}, maxCur = ${maxCur} where id = ${id} and macADR = ${macADR};`
     return dataExec(sql).then(updateData =>{
