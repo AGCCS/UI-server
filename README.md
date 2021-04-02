@@ -20,10 +20,10 @@ redis v5.0.3
 ##### Project setup
 ```
 npm install
-npm install --save cross-env
+npm install --save -g cross-env
 npm install --save slite3
-npm install --save-dev nodemon
-npm install --save pm2
+npm install --save-dev -g nodemon
+npm install --save -g pm2
 ```
 
 ##### Instruction for Redis
