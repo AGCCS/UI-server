@@ -42,7 +42,7 @@ function readData () {
                                 onConnect(id, mesJson.dev)  // once message received, reset the timer 
                                 checkConnect(id, mesJson.dev)
                                 statusUpdate(id, mesJson.dev ,mesJson.ccss)
-                                currentUpdate(id, mesJson.dev ,mesJson.smaxcur, mesJson.cmaxcur, mesJson.phases, mesJson.cur1, mesJson.cur2, mesJson.cur3)
+                                currentUpdate(id, mesJson.dev ,mesJson.amaxcur, mesJson.cmaxcur, mesJson.aphases, mesJson.cur1, mesJson.cur2, mesJson.cur3)
                                 readInfo(mesJson.dev)
                             })
                         }
@@ -65,7 +65,7 @@ function readData () {
 // read the status and system information of node with mqtt
 function readInfo (macADR) {
     var client = mqtt.connect(MQTT_CONF)
-    client.subscribe('/DEMESH/+/acknowledge',{qos:1})
+    client.subscribe('/DEMESH/'+macADR+'/acknowledge', {qos:1})
     client.publish('/DEMESH/'+macADR+'/control', JSON.stringify({"cmd": "status"}), {qos:2})
     client.publish('/DEMESH/'+macADR+'/control', JSON.stringify({"cmd": "system"}), {qos:2})
     var subSuccess = -1 // -1: no message arrived, 0: received one message, 1:received both 2 message
