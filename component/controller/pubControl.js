@@ -6,7 +6,7 @@ function setPhase (macADR, Phases) {
     var client = mqtt.connect(MQTT_CONF)
     var message = JSON.stringify(
         { "cmd": "avrsetpar",
-          "avrpar": "phases",
+          "avrpar": "sphases",
           "avrval": Phases }
     )
     client.on('connect', function () {
