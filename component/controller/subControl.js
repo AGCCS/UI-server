@@ -54,7 +54,7 @@ function readData () {
                     onConnect(id, mesJson.dev)  // once message received, reset the timer 
                     checkConnect(id, mesJson.dev)
                     statusUpdate(id, mesJson.dev ,mesJson.ccss)
-                    currentUpdate(id, mesJson.dev ,mesJson.smaxcur, mesJson.cmaxcur, mesJson.phases, mesJson.cur1, mesJson.cur2, mesJson.cur3)
+                    currentUpdate(id, mesJson.dev ,mesJson.amaxcur, mesJson.cmaxcur, mesJson.aphases, mesJson.cur1, mesJson.cur2, mesJson.cur3)
                 }
             })
         })

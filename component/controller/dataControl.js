@@ -1,6 +1,9 @@
 const {queryData, dataExec, escape} = require('../db/sqlite')
 const {setPhase, setMaxCur} = require('./pubControl')
 
+// ccss: OFFx: off, waiting for EV: Ax, negotiating power: Bx,
+// charging: Cx, pausing Px, waiting for power: Wx, z: Error
+
 // // function to register the mac address and id
 const macReg = (macADR) => {
     macADR = escape(macADR)
@@ -81,37 +84,44 @@ const connectUpdate = (id, macADR, connect=false) => {
 
 const statusUpdate = (id, macADR, workStatus) => {
     id = escape(id)
+
+    // ccss: OFFx: off, waiting for EV: Ax, negotiating power: Bx,
+    // charging: Cx, pausing Px, waiting for power: Wx, z: Error
+    
+
     // check whether workStatus is changed
     return getInfo(macADR).then(rows => {
         if(!rows[0]) {
             return false // no connection to database
         }
         let sql = `update nodestatus set workStatus = ${escape(workStatus)} where id = ${id} and macADR = ${escape(macADR)};`
-        if(rows[0].workStatus === workStatus) {
+        if(rows[0].Board.search(/fgccs/i)<0) {
+            if(rows[0].workStatus === workStatus) {
+                return dataExec(sql).then(updateData => {
+                    if(updateData.changes) {
+                        return true
+                    }
+                    return false // no connection to database
+                }) // make no change and return if workStatus do not change
+            }
+
             return dataExec(sql).then(updateData => {
                 if(updateData.changes) {
-                    return true
+                    sumManCur().then(val => {
+                        if(val) {
+                            autoWork().then(val => {
+                                if(val) {
+                                    return true
+                                }
+                                return false
+                            })
+                        }
+                        return false
+                    })      
                 }
                 return false // no connection to database
             }) // make no change and return if workStatus do not change
         }
-
-        return dataExec(sql).then(updateData => {
-            if(updateData.changes) {
-                sumManCur().then(val => {
-                    if(val) {
-                        autoWork().then(val => {
-                            if(val) {
-                                return true
-                            }
-                            return false
-                        })
-                    }
-                    return false
-                })      
-            }
-            return false // no connection to database
-        }) // make no change and return if workStatus do not change
     })
 }
 
