@@ -216,7 +216,7 @@ const autoWork = () => {
                 if(!autoNum) {
                     break
                 }
-                var bestResult =calBestCur(autoNum, rows[j].cmaxCur,remain)
+                var bestResult =calBestCur(autoNum, rows[j].cmaxCur, remain)
                 setPhase(rows[j].macADR, Number(bestResult.Phases))
                 setMaxCur(rows[j].macADR, bestResult.maxCur)
                 remain = bestResult.remain
