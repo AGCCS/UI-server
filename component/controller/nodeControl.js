@@ -58,46 +58,43 @@ const renameNode = (id, nodeName = {})  => {
 }
 
 // function to post the setting of node to database and node
-const changeNodeSetting = (id, macADR, maxCur = null, workmode = null, workStatus= null, Phases = null)  => {
+const changeNodeSetting = (id, macADR, smaxCur = null, workmode = null, sPhases = null)  => {
     id = escape(id)
-    workStatus = escape(workStatus)
     if( workmode === 'auto') {
-        maxCur = 0
-        Phases = 0
+        smaxCur = 0
+        sPhases = 0
     }
     workmode = escape(workmode)
     
-    let sql = `select connect from nodestatus where id= ${id}`
+    let sql = `select connect, workmode, smaxCur, sPhases, workStatus from nodestatus where id= ${id}`
     return queryData(sql).then(rows => {
         if (!rows[0].connect) {
             return false
         }
-        // update the workmode and maxCur in database at first
-        sql = `update nodestatus set workmode=${workmode}, maxCur = ${escape(maxCur)} where id= ${id};`
+        const originSMax = rows[0].smaxCur
+        const originSPhases = rows[0].sPhases
+        const workStatus = rows[0].workStatus
+        // update the workmode ,smaxCur and sPhases in database at first
+        sql = `update nodestatus set workmode=${workmode}, smaxCur = ${escape(smaxCur)}, sPhases = ${escape(sPhases)} where id= ${id};`
         return dataExec(sql).then(updateData =>{
             if (updateData.changes > 0) {
-                setPhase(macADR, Phases)
                 return sumManCur().then(val =>{
                     if(!val) {
                         return false // no connection to database
                     }
                     return calRemain().then(remain => {
-                        if (!remain[1]||!remain[2]||!remain[3]) {
-                            return false
+                        if (remain[1]<0 || remain[2]<0 || remain[3]<0) {
+                            // if remaining current of one phase is negative after collocation, reset smaxCur and sPhases
+                            sql = `update nodestatus set smaxCur = ${originSMax}, sPhases = ${originSPhases} where id= ${id};`
+                            return dataExec(sql).then (updateData => {
+                                return false
+                            })
                         }
-                        setMaxCur(macADR, maxCur)
-                        setPhase(macADR, Phases)
-                        Phases = escape(Phases)
-                        maxCur = escape(maxCur)
-                        sql = `update nodestatus set maxCur=${maxCur}, workStatus=${workStatus}, workmode=${workmode}, Phases=${Phases} where id=${id};`
-                        return dataExec(sql).then(updateData =>{
-                            if (updateData.changes > 0) {
-                                return autoWork().then(val => {
-                                    if(val) {
-                                        return true
-                                    }
-                                    return false
-                                })
+                        setPhase(macADR, sPhases)
+                        setMaxCur(macADR, smaxCur)
+                        return autoWork().then(val => {
+                            if(val) {
+                                return true
                             }
                             return false
                         })

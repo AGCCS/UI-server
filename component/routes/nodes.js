@@ -51,9 +51,9 @@ router.put('/list', adminCheck, (req, res, next) => {
 
 /* Put the setting of a node */
 router.put('/status', adminCheck, (req, res, next) => {
-  const {id, macADR, maxCur, workmode, workStatus, Phases} = req.body
+  const {id, macADR, smaxCur, workmode, sPhases} = req.body
     if(id){
-      const result = changeNodeSetting(id, macADR, maxCur, workmode, workStatus, Phases)
+      const result = changeNodeSetting(id, macADR, smaxCur, workmode, sPhases)
       return result.then(val => {
           if (val) {
             return  res.json( new SuccessModel({'msg': 'successfully change the setting the node', 'status': 202})

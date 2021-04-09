@@ -82,21 +82,16 @@ const connectUpdate = (id, macADR, connect=false) => {
     dataExec(sql)
 }
 
-const statusUpdate = (id, macADR, workStatus) => {
+const statusUpdate = (id, macADR, ccss) => {
     id = escape(id)
-
-    // ccss: OFFx: off, waiting for EV: Ax, negotiating power: Bx,
-    // charging: Cx, pausing Px, waiting for power: Wx, z: Error
-    
 
     // check whether workStatus is changed
     return getInfo(macADR).then(rows => {
         if(!rows[0]) {
             return false // no connection to database
         }
-        let sql = `update nodestatus set workStatus = ${escape(workStatus)} where id = ${id} and macADR = ${escape(macADR)};`
-        if(rows[0].Board.search(/fgccs/i)<0) {
-            if(rows[0].workStatus === workStatus) {
+        let sql = `update nodestatus set workStatus = ${escape(ccss)} where id = ${id} and macADR = ${escape(macADR)};`
+            if(rows[0].workStatus === ccss) {
                 return dataExec(sql).then(updateData => {
                     if(updateData.changes) {
                         return true
@@ -121,7 +116,6 @@ const statusUpdate = (id, macADR, workStatus) => {
                 }
                 return false // no connection to database
             }) // make no change and return if workStatus do not change
-        }
     })
 }
 
@@ -172,7 +166,7 @@ const sumManCur = () => {
     var usedCur1 = 0
     var usedCur2 = 0
     var usedCur3 = 0
-    let sql = `select id, macADR, maxCur, Phases from nodestatus where workmode='manual' and connect = 1 and workStatus!=0 order by id;`
+    let sql = `select id, macADR, smaxCur, sPhases, workStatus from nodestatus where workmode='manual' and connect = 1 and workStatus between 20 and 70  order by id;`
     return queryData(sql).then(rows => {
         if(!rows[0]){ // no manual node
             sql = `update meshsetting set usedCur1 = '${usedCur1}', usedCur2 = '${usedCur2}', usedCur3 = '${usedCur3}';`
@@ -185,24 +179,23 @@ const sumManCur = () => {
         }
         var maxCur=0
         for (let i = 0; i < rows.length; i++) {
-            setMaxCur(rows[i].macADR, rows[i].maxCur)
-            setPhase(rows[i].macADR, rows[i].Phases)
-            if (rows[i].workStatus!=0) {
-                rows[i].Phases = rows[i].Phases.toString()
-                if (rows[i].maxCur >= rows[i].cmaxCur) {
-                    maxCur = rows[i].cmaxCur
-                } else {
-                    maxCur = rows[i].maxCur
-                }
-                if (rows[i].Phases.indexOf("1") >= 0) {
-                    usedCur1 += maxCur
-                }
-                if (rows[i].Phases.indexOf("2") >= 0) {
-                    usedCur2 += maxCur
-                }
-                if (rows[i].Phases.indexOf("3") >= 0) {
-                    usedCur3 += maxCur
-                }
+            setMaxCur(rows[i].macADR, rows[i].smaxCur)
+            setPhase(rows[i].macADR, rows[i].sPhases)
+            rows[i].Phases = rows[i].Phases.toString()
+            if (rows[i].maxCur >= rows[i].cmaxCur) {
+                maxCur = rows[i].cmaxCur
+            } else {
+                maxCur = rows[i].smaxCur
+            }
+            maxCur = rows[i].smaxCur >= rows[i].cmaxCur ? rows[i].cmaxCur : rows[i].smaxCur
+            if (rows[i].Phases.indexOf("1") >= 0) {
+                usedCur1 += maxCur
+            }
+            if (rows[i].Phases.indexOf("2") >= 0) {
+                usedCur2 += maxCur
+            }
+            if (rows[i].Phases.indexOf("3") >= 0) {
+                usedCur3 += maxCur
             }
         }
         sql = `update meshsetting set usedCur1 = '${usedCur1}', usedCur2 = '${usedCur2}', usedCur3 = '${usedCur3}';`
@@ -273,7 +266,7 @@ const calTotalRemain = (Cur1,Cur2,Cur3) =>{
     return {Phase, CurSum}
 }
 
-// calculate the biggest available remaining current and its phases
+// calculate the biggest available remaining current and its phase
 const calBigRemain = (Cur1, Cur2, Cur3) => {
     var Cur = Cur1
     var Phase = '1'
@@ -292,7 +285,7 @@ const calBigRemain = (Cur1, Cur2, Cur3) => {
     return {Cur, Phase}
 }
 
-// calculate the smallest available remaining current and its phases
+// calculate the smallest available remaining current and its phase
 const calSmallRemain = (Cur1, Cur2, Cur3) => {
     var Cur = Cur1
     var Phase = '1'
