@@ -76,6 +76,7 @@ const changeNodeSetting = (id, macADR, smaxCur = null, workmode = null, sPhases 
         const workStatus = rows[0].workStatus
         // update the workmode ,smaxCur and sPhases in database at first
         sql = `update nodestatus set workmode=${workmode}, smaxCur = ${escape(smaxCur)}, sPhases = ${escape(sPhases)} where id= ${id};`
+        console.log(sql)
         return dataExec(sql).then(updateData =>{
             if (updateData.changes > 0) {
                 return sumManCur().then(val =>{

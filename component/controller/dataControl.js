@@ -181,7 +181,7 @@ const sumManCur = () => {
         for (let i = 0; i < rows.length; i++) {
             setMaxCur(rows[i].macADR, rows[i].smaxCur)
             setPhase(rows[i].macADR, rows[i].sPhases)
-            rows[i].Phases = rows[i].Phases.toString()
+            rows[i].Phases = rows[i].sPhases.toString()
             if (rows[i].maxCur >= rows[i].cmaxCur) {
                 maxCur = rows[i].cmaxCur
             } else {
