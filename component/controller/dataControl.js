@@ -77,7 +77,8 @@ const connectUpdate = (id, macADR, connect=false) => {
     else {
         // If one node lose connection, reset the workmode of node to auto
         connect = escape(connect)
-        sql = `update nodestatus set connect = ${connect}, workmode = 'auto', Phases = 0, maxCur = 0, workStatus = 0, cur1 =0, cur2 = 0, cur3 =0 where id = ${id} and macADR = ${macADR};`
+        sql = `update nodestatus set connect = ${connect}, workmode = 'auto', Phases = 0, maxCur = 0, workStatus = 0,
+        cur1 = 0, cur2 = 0, cur3 = 0, cmaxCur = 0 where id = ${id} and macADR = ${macADR};`
     }
     dataExec(sql)
 }
@@ -99,7 +100,6 @@ const statusUpdate = (id, macADR, ccss) => {
                     return false // no connection to database
                 }) // make no change and return if workStatus do not change
             }
-
             return dataExec(sql).then(updateData => {
                 if(updateData.changes) {
                     sumManCur().then(val => {
@@ -166,7 +166,7 @@ const sumManCur = () => {
     var usedCur1 = 0
     var usedCur2 = 0
     var usedCur3 = 0
-    let sql = `select id, macADR, smaxCur, sPhases, workStatus from nodestatus where workmode='manual' and connect = 1 and workStatus between 20 and 70  order by id;`
+    let sql = `select id, macADR, smaxCur, sPhases, cmaxCur, workStatus from nodestatus where workmode='manual' and connect = 1 and workStatus between 20 and 70 order by id;`
     return queryData(sql).then(rows => {
         if(!rows[0]){ // no manual node
             sql = `update meshsetting set usedCur1 = '${usedCur1}', usedCur2 = '${usedCur2}', usedCur3 = '${usedCur3}';`
@@ -179,6 +179,11 @@ const sumManCur = () => {
         }
         var maxCur=0
         for (let i = 0; i < rows.length; i++) {
+            if (rows[i].smaxCur > rows[i].cmaxCur) {
+                rows[i].smaxCur = rows[i].cmaxCur
+                sql = `update nodestatus set smaxCur = '${rows[i].cmaxCur}' where id = '${rows[i].id}' and macADR = '${rows[i].macADR}' `
+                dataExec(sql)
+            }
             setMaxCur(rows[i].macADR, rows[i].smaxCur)
             setPhase(rows[i].macADR, rows[i].sPhases)
             rows[i].Phases = rows[i].sPhases.toString()

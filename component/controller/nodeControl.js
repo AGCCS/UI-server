@@ -66,17 +66,18 @@ const changeNodeSetting = (id, macADR, smaxCur = null, workmode = null, sPhases 
     }
     workmode = escape(workmode)
     
-    let sql = `select connect, workmode, smaxCur, sPhases, workStatus from nodestatus where id= ${id}`
+    let sql = `select connect, workmode, smaxCur, sPhases, cmaxCur, workStatus from nodestatus where id= ${id}`
     return queryData(sql).then(rows => {
         if (!rows[0].connect) {
             return false
         }
         const originSMax = rows[0].smaxCur
         const originSPhases = rows[0].sPhases
-        const workStatus = rows[0].workStatus
+        if (rows[0].cmaxCur > 5 && smaxCur > rows[0].cmaxCur) {
+            smaxCur = rows[0].cmaxCur
+        }
         // update the workmode ,smaxCur and sPhases in database at first
         sql = `update nodestatus set workmode=${workmode}, smaxCur = ${escape(smaxCur)}, sPhases = ${escape(sPhases)} where id= ${id};`
-        console.log(sql)
         return dataExec(sql).then(updateData =>{
             if (updateData.changes > 0) {
                 return sumManCur().then(val =>{
