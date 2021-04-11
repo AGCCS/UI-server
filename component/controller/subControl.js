@@ -41,8 +41,10 @@ function readData () {
                                 id = dataRows[0].id
                                 onConnect(id, mesJson.dev)  // once message received, reset the timer 
                                 checkConnect(id, mesJson.dev)
-                                statusUpdate(id, mesJson.dev ,mesJson.ccss)
-                                currentUpdate(id, mesJson.dev ,mesJson.amaxcur, mesJson.cmaxcur, mesJson.aphases, mesJson.cur1, mesJson.cur2, mesJson.cur3)
+                                currentUpdate(id, mesJson.dev ,mesJson.amaxcur, mesJson.cmaxcur,
+                                    mesJson.aphases, mesJson.cur1, mesJson.cur2, mesJson.cur3).then(val =>{
+                                        statusUpdate(id, mesJson.dev ,mesJson.ccss)
+                                    })
                                 readInfo(mesJson.dev)
                             })
                         }
@@ -53,8 +55,10 @@ function readData () {
                     id = dataRows[0].id
                     onConnect(id, mesJson.dev)  // once message received, reset the timer 
                     checkConnect(id, mesJson.dev)
-                    statusUpdate(id, mesJson.dev ,mesJson.ccss)
-                    currentUpdate(id, mesJson.dev ,mesJson.amaxcur, mesJson.cmaxcur, mesJson.aphases, mesJson.cur1, mesJson.cur2, mesJson.cur3)
+                    currentUpdate(id, mesJson.dev ,mesJson.amaxcur, mesJson.cmaxcur, mesJson.aphases,
+                        mesJson.cur1, mesJson.cur2, mesJson.cur3).then(val =>{
+                            statusUpdate(id, mesJson.dev ,mesJson.ccss)
+                    })
                 }
             })
         })

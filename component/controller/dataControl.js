@@ -92,30 +92,27 @@ const statusUpdate = (id, macADR, ccss) => {
             return false // no connection to database
         }
         let sql = `update nodestatus set workStatus = ${escape(ccss)} where id = ${id} and macADR = ${escape(macADR)};`
-            if(rows[0].workStatus === ccss) {
-                return dataExec(sql).then(updateData => {
-                    if(updateData.changes) {
-                        return true
-                    }
-                    return false // no connection to database
-                }) // make no change and return if workStatus do not change
+        return dataExec(sql).then(updateData => {
+            if(!updateData.changes) {
+                return false // Database Error
             }
-            return dataExec(sql).then(updateData => {
-                if(updateData.changes) {
-                    sumManCur().then(val => {
+            // make no change and return if workStatus do not change
+            if(rows[0].workStatus === ccss) {
+                return true 
+            }
+            // For node then workStatus changed
+            return sumManCur().then(val => {
+                if(val) {
+                    autoWork().then(val => {
                         if(val) {
-                            autoWork().then(val => {
-                                if(val) {
-                                    return true
-                                }
-                                return false
-                            })
+                            return true
                         }
                         return false
-                    })      
+                    })
                 }
-                return false // no connection to database
-            }) // make no change and return if workStatus do not change
+                return false
+            })    
+        })
     })
 }
 
@@ -161,15 +158,16 @@ const infoUpdate = (id, macADR, Parent = null,
     })
 }
 
-// calculate the total current that should be supplied to manual mode in each phase
+// calculate the total current that are supplied to manual mode in each phase
 const sumManCur = () => {
     var usedCur1 = 0
     var usedCur2 = 0
     var usedCur3 = 0
-    let sql = `select id, macADR, smaxCur, sPhases, cmaxCur, workStatus from nodestatus where workmode='manual' and connect = 1 and workStatus between 20 and 70 order by id;`
+    let sql = `select id, macADR, smaxCur, sPhases, cmaxCur, workStatus
+    from nodestatus where workmode='manual' and connect = 1 and workStatus between 20 and 60 order by id;`
     return queryData(sql).then(rows => {
-        if(!rows[0]){ // no manual node
-            sql = `update meshsetting set usedCur1 = '${usedCur1}', usedCur2 = '${usedCur2}', usedCur3 = '${usedCur3}';`
+        if(!rows[0]){ // No node in manual mode
+            sql = `update meshsetting set usedCur1 = ${usedCur1}, usedCur2 = ${usedCur2}, usedCur3 = ${usedCur3};`
             return dataExec(sql).then(updateData => {
                 if (updateData.changes > 0) {
                     return true
@@ -187,12 +185,7 @@ const sumManCur = () => {
             setMaxCur(rows[i].macADR, rows[i].smaxCur)
             setPhase(rows[i].macADR, rows[i].sPhases)
             rows[i].Phases = rows[i].sPhases.toString()
-            if (rows[i].maxCur >= rows[i].cmaxCur) {
-                maxCur = rows[i].cmaxCur
-            } else {
-                maxCur = rows[i].smaxCur
-            }
-            maxCur = rows[i].smaxCur >= rows[i].cmaxCur ? rows[i].cmaxCur : rows[i].smaxCur
+            maxCur = rows[i].smaxCur
             if (rows[i].Phases.indexOf("1") >= 0) {
                 usedCur1 += maxCur
             }
@@ -205,21 +198,19 @@ const sumManCur = () => {
         }
         sql = `update meshsetting set usedCur1 = '${usedCur1}', usedCur2 = '${usedCur2}', usedCur3 = '${usedCur3}';`
         return dataExec(sql).then(updateData => {
-            if (updateData.changes > 0) {
-                return true
-            }
-            return false // no connection with database
+            return true
         })
     })
 }
 
+// For Node in auto workmode
 const autoWork = () => {
     return calRemain().then(remain => {
-        let sql = `select id, macADR, cmaxCur from nodestatus where workmode='auto' and connect = 1 and workStatus != 0 order by cmaxCur;`
+        let sql = `select id, macADR, cmaxCur from nodestatus where workmode='auto'
+        and connect = 1 and workStatus between 20 and 60 order by cmaxCur;`
         return queryData(sql).then(rows => {
             // calculate the available average Current and number of cars in auto mode
             var autoNum = rows.length
-
             for (let j = 0; j < rows.length; j++) {
                 if(!autoNum) {
                     break

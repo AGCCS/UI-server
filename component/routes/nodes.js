@@ -24,7 +24,7 @@ router.get('/status', (req, res, next) => {
   id = req.query.id
   const result = getNodesStatus(id)
   return result.then(nodeStatus => {
-    res.json (
+    return res.json (
       new SuccessModel({'msg': 'successfully get the status of mesh', 'status': 200}, nodeStatus)
     )
   })
@@ -55,12 +55,14 @@ router.put('/status', adminCheck, (req, res, next) => {
     if(id){
       const result = changeNodeSetting(id, macADR, smaxCur, workmode, sPhases)
       return result.then(val => {
-          if (val) {
-            return  res.json( new SuccessModel({'msg': 'successfully change the setting the node', 'status': 202})
-          )}
-          return res.json(
-            new ErrorModel({'msg': 'Failed to change the setting of the node', 'status': 404})
-          )
+        let model
+        switch (val) {
+          case -1: model = new ErrorModel({'msg': 'Failed, cause node is disconncted', 'status': 404}); break
+          case -2: model = new ErrorModel({'msg': 'Failed, cause no valid remaining current in all phases', 'status': 406}); break
+          case -3: model = new ErrorModel({'msg': 'Failed, cause no valid remaining current in given parameters', 'status': 402}); break
+          case 1: model = new SuccessModel({'msg': 'successfully change the setting the node', 'status': 201}); break
+        }
+        return res.json(model)
       })
     }
     return res.json(

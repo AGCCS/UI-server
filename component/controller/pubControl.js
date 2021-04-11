@@ -62,7 +62,7 @@ function noBlink (macADR) {
     var message = JSON.stringify(
         { "cmd": "avrsetpar",
           "avrpar": "blinks",
-          "avrval": 1 }
+          "avrval": 0 }
     )
     client.on('connect', function () {
         client.publish('/DEMESH/'+macADR+'/control', message, {qos:1})

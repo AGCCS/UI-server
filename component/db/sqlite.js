@@ -75,10 +75,10 @@ meshsettingSql += "usedCur2 NOT NULL DEFAULT 0, usedCur3 NOT NULL DEFAULT 0, tot
 meshsettingSql += "totalCur2 NOT NULL DEFAULT 0, totalCur3 NOT NULL DEFAULT 0, UNIQUE (id));"
 
 let nodestatusSql = "CREATE TABLE if not exists nodestatus(id integer primary key autoincrement NOT NULL, "
-nodestatusSql += "macADR VARCHAR(18), nodeName VARCHAR(25), workStatus SMALLINT, maxCur SMALLINT, cmaxCur SMALLINT, smaxCur SMALLINT, "
-nodestatusSql += "workmode VARCHAR(10) DEFAULT 'auto', connect BOOLEAN, Cur1 SMALLINT, Cur2 SMALLINT, Cur3 SMALLINT, "
-nodestatusSql += "Phases SMALLINT, sPhases SMALLINT, Parent VARCHAR(24), Rssi SMALLINT, Layer SMALLINT, Plat SMALLINT, Version VARCHAR(8), "
-nodestatusSql += "Board VARCHAR(45), avrVer VARCHAR(8));"
+nodestatusSql += "macADR VARCHAR(18), nodeName VARCHAR(25), workStatus SMALLINT, maxCur SMALLINT, cmaxCur SMALLINT, "
+nodestatusSql += "smaxCur SMALLINT DEFAULT 0, workmode VARCHAR(10) DEFAULT 'auto', connect BOOLEAN, Cur1 SMALLINT, "
+nodestatusSql += "Cur2 SMALLINT, Cur3 SMALLINT, Phases SMALLINT, sPhases SMALLINT DEFAULT 0, Parent VARCHAR(24), Rssi SMALLINT, "
+nodestatusSql += "Layer SMALLINT, Plat SMALLINT, Version VARCHAR(8), Board VARCHAR(45), avrVer VARCHAR(8));"
 
 chargingpark.createTable(userTableSql)
 chargingpark.createTable(meshsettingSql)
