@@ -67,7 +67,7 @@ const currentUpdate = (id, macADR ,maxCur, cmaxCur, phases, cur1, cur2, cur3) =>
 
 // set connect to false when no connection to the node
 const connectUpdate = (id, macADR, connect=false) => {
-    let sql
+    let sql = ``
     id = escape(id)
     macADR = escape(macADR)
     if(connect) {
@@ -78,9 +78,11 @@ const connectUpdate = (id, macADR, connect=false) => {
         // If one node lose connection, reset the workmode of node to auto
         connect = escape(connect)
         sql = `update nodestatus set connect = ${connect}, workmode = 'auto', Phases = 0, maxCur = 0, workStatus = 0,
-        cur1 = 0, cur2 = 0, cur3 = 0, cmaxCur = 0 where id = ${id} and macADR = ${macADR};`
+        cur1 = 0, cur2 = 0, cur3 = 0, cmaxCur = 0, sPhases = 0, smaxCur = 0 where id = ${id} and macADR = ${macADR};`
     }
-    dataExec(sql)
+    return dataExec(sql).then(updateData => {
+        return true
+    })
 }
 
 const statusUpdate = (id, macADR, ccss) => {
@@ -88,23 +90,33 @@ const statusUpdate = (id, macADR, ccss) => {
 
     // check whether workStatus is changed
     return getInfo(macADR).then(rows => {
+        let sql = ``
         if(!rows[0]) {
             return false // no connection to database
         }
-        let sql = `update nodestatus set workStatus = ${escape(ccss)} where id = ${id} and macADR = ${escape(macADR)};`
+        // make no change and return if workStatus do not change.
+        if(ccss === rows[0].workStatus) {
+            return true 
+        }
+        // When charging ends up. reset workmode to auto, sphases and smaxCur to zero.
+        if (ccss<10 && ccss>=0) {
+            setPhase(macADR, 0)
+            setMaxCur(macADR, 0)
+            sql = `update nodestatus set workStatus = ${escape(ccss)}, workmode = 'auto', smaxCur = 0, sPhases = 0
+            where id = ${id} and macADR = ${escape(macADR)};`
+        }
+        // When wait EV
+        else {
+            sql = `update nodestatus set workStatus = ${escape(ccss)} where id = ${id} and macADR = ${escape(macADR)};`
+        }
         return dataExec(sql).then(updateData => {
             if(!updateData.changes) {
                 return false // Database Error
             }
-            // make no change and return if workStatus do not change
-            if(rows[0].workStatus === ccss) {
-                return true 
-            }
-            // For node then workStatus changed
-            return sumManCur().then(val => {
-                if(val) {
-                    autoWork().then(val => {
-                        if(val) {
+            return sumManCur().then(val1 => {
+                if(val1) {
+                    autoWork().then(val2 => {
+                        if(val2) {
                             return true
                         }
                         return false
@@ -160,14 +172,18 @@ const infoUpdate = (id, macADR, Parent = null,
 
 // calculate the total current that are supplied to manual mode in each phase
 const sumManCur = () => {
+    // usedCur: the power is supplied to the connected EV. totalCur: the power should be supplied to the node.
     var usedCur1 = 0
     var usedCur2 = 0
     var usedCur3 = 0
+    var totalCur1 = 0
+    var totalCur2 = 0
+    var totalCur3 = 0
     let sql = `select id, macADR, smaxCur, sPhases, cmaxCur, workStatus
-    from nodestatus where workmode='manual' and connect = 1 and workStatus between 20 and 60 order by id;`
+    from nodestatus where workmode='manual' and connect = 1 and workStatus between 10 and 60 order by id;`
     return queryData(sql).then(rows => {
         if(!rows[0]){ // No node in manual mode
-            sql = `update meshsetting set usedCur1 = ${usedCur1}, usedCur2 = ${usedCur2}, usedCur3 = ${usedCur3};`
+            sql = `update meshsetting set usedCur1=0, usedCur2=0, usedCur3=0, totalCur1=0, totalCur2=0, totalCur3=0;`
             return dataExec(sql).then(updateData => {
                 if (updateData.changes > 0) {
                     return true
@@ -177,26 +193,47 @@ const sumManCur = () => {
         }
         var maxCur=0
         for (let i = 0; i < rows.length; i++) {
-            if (rows[i].smaxCur > rows[i].cmaxCur) {
+            if (rows[i].smaxCur > rows[i].cmaxCur && rows[i].cmaxCur>5) {
                 rows[i].smaxCur = rows[i].cmaxCur
                 sql = `update nodestatus set smaxCur = '${rows[i].cmaxCur}' where id = '${rows[i].id}' and macADR = '${rows[i].macADR}' `
                 dataExec(sql)
             }
-            setMaxCur(rows[i].macADR, rows[i].smaxCur)
-            setPhase(rows[i].macADR, rows[i].sPhases)
             rows[i].Phases = rows[i].sPhases.toString()
             maxCur = rows[i].smaxCur
-            if (rows[i].Phases.indexOf("1") >= 0) {
-                usedCur1 += maxCur
+            // when ccss is Ax -> wait Ev -> only calculate the totalCur
+            if (rows[i].workStatus<20) {
+                if (rows[i].Phases.indexOf("1") >= 0) {
+                    totalCur1 += maxCur
+                }
+                if (rows[i].Phases.indexOf("2") >= 0) {
+                    totalCur2 += maxCur
+                }
+                if (rows[i].Phases.indexOf("3") >= 0) {
+                    totalCur3 += maxCur
+                }
             }
-            if (rows[i].Phases.indexOf("2") >= 0) {
-                usedCur2 += maxCur
-            }
-            if (rows[i].Phases.indexOf("3") >= 0) {
-                usedCur3 += maxCur
+            else if (rows[i].workStatus>=20) {
+                 // when ccss is Bx -> negotiation -> set sPhases and smaxCur
+                if (rows[i].workStatus<30) {
+                    setMaxCur(rows[i].macADR, rows[i].smaxCur)
+                    setPhase(rows[i].macADR, rows[i].sPhases)
+                }
+                if (rows[i].Phases.indexOf("1") >= 0) {
+                    usedCur1 += maxCur
+                    totalCur1 += maxCur
+                }
+                if (rows[i].Phases.indexOf("2") >= 0) {
+                    usedCur2 += maxCur
+                    totalCur2 += maxCur
+                }
+                if (rows[i].Phases.indexOf("3") >= 0) {
+                    usedCur3 += maxCur
+                    totalCur3 += maxCur
+                }
             }
         }
-        sql = `update meshsetting set usedCur1 = '${usedCur1}', usedCur2 = '${usedCur2}', usedCur3 = '${usedCur3}';`
+        sql = `update meshsetting set usedCur1 = ${usedCur1}, usedCur2 = ${usedCur2}, usedCur3 = ${usedCur3},
+        totalCur1 = ${totalCur1}, totalCur2 = ${totalCur2}, totalCur3 = ${totalCur3};`
         return dataExec(sql).then(updateData => {
             return true
         })
