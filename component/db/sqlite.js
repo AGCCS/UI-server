@@ -58,7 +58,10 @@ DB.SqliteDB.prototype.queryData = function(sql){
 DB.SqliteDB.prototype.close = function(){
     DB.db.close();
 };
-
+var pathExist = fs.existsSync(__dirname+"/dbFile/")
+if(!pathExist) {
+    fs.mkdirSync(__dirname+"/dbFile/")
+}
 var dbFile = __dirname+"/dbFile/chargingpark.db"
 dbExist = fs.existsSync(dbFile);
 var chargingpark = new DB.SqliteDB(dbFile)
