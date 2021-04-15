@@ -1,4 +1,4 @@
-const {queryData, dataExec, escape} = require('../db/sqlite')
+const {queryData, dataExec, escape} = require('../tool/sqlite')
 const {setPhase, setMaxCur} = require('./pubControl')
 const {sumManCur, calRemain, autoWork } = require('./dataControl')
 const {readAllInfo} = require('./subControl')

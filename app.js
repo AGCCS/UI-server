@@ -12,6 +12,8 @@ const {readData} = require('./component/controller/subControl')
 var bodyParser = require('body-parser');
 var multer  = require('multer');
 const http = require('http')
+var aedesMqtt = require('./component/tool/aedesMqtt').aedesMqtt
+var aedesPersistenceRedis = require('aedes-persistence-redis')
  
 var usersRouter = require('./component/routes/users');
 var nodesRouter = require('./component/routes/nodes');
@@ -50,7 +52,7 @@ app.use(express.static('public')); // set the path where the static file is
 app.use(bodyParser.urlencoded({ extended: false })); // if the request body is not json, convert the request body into an object
 app.use(multer({ dest: '/tmp/'}).array('file'));
 
-const redisClient = require('./component/db/redis')
+const redisClient = require('./component/tool/redis')
 const sessionStore = new RedisStore ({
   client : redisClient
 })
@@ -86,6 +88,32 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+// set up mqtt server
+var adeasSettings = {
+  persistence: aedesPersistenceRedis({
+      port: 6379,          // Redis port
+      host: '127.0.0.1',   // Redis host
+      family: 4,           // 4 (IPv4) or 6 (IPv6)
+      db: 0,
+      maxSessionDelivery: 100, // maximum offline messages deliverable on client CONNECT, default is 1000
+      packetTTL: function (packet) { // offline message TTL, default is disabled
+        return 10 //seconds
+      }
+  }),
+  heartbeatInterval: 5*1000, // 
+  connectTimeout: 10*1000 // 10sec Timeout for client disconnected
+}
+var mqttPort = 1884
+var wsPort = 9001
+var mqttServer = new aedesMqtt(adeasSettings, mqttPort, wsPort)
+// subCB(subscriptions, client), pubCB(packet, client), conCB(client), disconCB(client)
+// mqttServer.pub(pubCB) mqttServer.con(conCB) mqttServer.discon(disconCB)
+// function subCB (subscriptions, client) {
+//   console.log(subscriptions)
+//   console.log(client.id)
+// }
+// mqttServer.sub(subCB)
 
 //start the read task
 readData()

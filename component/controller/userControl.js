@@ -1,4 +1,4 @@
-const {queryData, dataExec, escape} = require('../db/sqlite')
+const {queryData, dataExec, escape} = require('../tool/sqlite')
 const {genPassword} = require('./pwdControl')
 var jwt = require('jsonwebtoken')
 const {jwtKey} = require('../../conf/configuration')

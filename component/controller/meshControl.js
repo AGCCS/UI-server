@@ -1,4 +1,4 @@
-const {queryData, dataExec, escape} = require('../db/sqlite')
+const {queryData, dataExec, escape} = require('../tool/sqlite')
 
 // function to intialize the mesh, scan the mesh 30s to register all nodes
 const meshInit = () => {

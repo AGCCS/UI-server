@@ -1,7 +1,6 @@
 const env = process.env.NODE_ENV // environment parameter
 
-let MYSQL_CONF
-let REDIS_CONF
+let REDIS_CONF, MQTT_CONF, jwtKey, dirName
 
 if (env === 'dev') {
     REDIS_CONF = {
@@ -26,7 +25,6 @@ if (env === 'production') {
 }
 
 module.exports = {
-    MYSQL_CONF,
     REDIS_CONF,
     MQTT_CONF,
     jwtKey,
