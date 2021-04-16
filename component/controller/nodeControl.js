@@ -83,9 +83,9 @@ const changeNodeSetting = (id, macADR, smaxCur = null, workmode, sPhases = null)
                 sql = `select * from meshsetting;`
                 return queryData(sql).then(meshData => {
                     const wholeMax = meshData[0].wholeMax
-                    restCur1 = meshData[0].wholeMax - meshData[0].totalCur1
-                    restCur2 = meshData[0].wholeMax - meshData[0].totalCur2
-                    restCur3 = meshData[0].wholeMax - meshData[0].totalCur3
+                    restCur1 = meshData[0].wholeMax - meshData[0].manTotalCur1
+                    restCur2 = meshData[0].wholeMax - meshData[0].manTotalCur2
+                    restCur3 = meshData[0].wholeMax - meshData[0].manTotalCur3
                     if (originSPhases.indexOf("1") >= 0) {
                         restCur1 += originSMax
                     }

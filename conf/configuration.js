@@ -1,6 +1,6 @@
 const env = process.env.NODE_ENV // environment parameter
 
-let REDIS_CONF, MQTT_CONF, jwtKey, dirName
+let MQTT_CONF, REDIS_CONF, jwtKey, dirName, defaultUser, defaultPwd
 
 if (env === 'dev') {
     REDIS_CONF = {
@@ -11,6 +11,8 @@ if (env === 'dev') {
     MQTT_CONF = 'mqtt:192.168.5.1:1884'
     jwtKey = 'N27#K$5m_P[C'
     dirName = '/home/pi/Loadstation/UI-server-2.0-demo/public'
+    defaultUser = 'admin'
+    defaultPwd = '123456'
 }
 
 if (env === 'production') {
@@ -22,11 +24,15 @@ if (env === 'production') {
     MQTT_CONF = 'mqtt:192.168.5.1:1884'
     jwtKey = 'N27#K$5m_P[C'
     dirName = '/home/pi/Loadstation/UI-server-2.0-demo/public'
+    defaultUser = 'admin'
+    defaultPwd = '123456'
 }
 
 module.exports = {
     REDIS_CONF,
     MQTT_CONF,
     jwtKey,
-    dirName
+    dirName,
+    defaultPwd,
+    defaultUser
 }

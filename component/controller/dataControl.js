@@ -47,21 +47,72 @@ const getInfo = (macADR) => {
 
 // update the currentvalue and phases of node which id=? and macADR=?
 const currentUpdate = (id, macADR ,maxCur, cmaxCur, phases, cur1, cur2, cur3) => {
-    id = escape(id)
-    macADR = escape(macADR)
-    maxCur = maxCur < 0 ? escape(0) : escape(maxCur/10)
-    cmaxCur = cmaxCur < 0 ? escape(0) : escape(cmaxCur/10)
-    phases = escape(phases)
-    cur1 = cur1 < 0 ? escape(0) : escape(cur1/10)
-    cur2 = cur2 < 0 ? escape(0) : escape(cur2/10)
-    cur3 = cur3 < 0 ? escape(0) : escape(cur3/10)
-    let sql = `update nodestatus set cmaxCur = ${cmaxCur}, Phases = ${phases},
-    cur1 = ${cur1}, cur2 = ${cur2}, cur3 = ${cur3}, maxCur = ${maxCur} where id = ${id} and macADR = ${macADR};`
-    return dataExec(sql).then(updateData =>{
-        if (updateData.changes > 0) {
-            return true 
+    let sql = `select * from nodestatus where id = ${id} and macADR = '${macADR}';`
+    return queryData(sql).then(rows => {
+        id = escape(id)
+        cmaxCur = cmaxCur < 0 ? escape(0) : escape(cmaxCur/10)
+        phases = escape(phases)
+        // Judging the progress of charging. 
+        // chargePro: -1: charging not started yet (default when ccss not Cx), 1: charging just started, the current rises
+        // 2: current has risen to the maximum current. 3: batter is almost full, current drop
+        var chargePro = -1
+        if (rows[0].workStatus <40 && rows[0].workStatus>=30) {
+            if (rows[0].chargePro<=0) {
+                chargePro = 1
+            }
+            // if (maxCur == cur1 || maxCur == cur2 || maxCur == cur3 && rows[0].chargePro == 1) {
+            if (maxCur == cur1 || maxCur == cur2 || maxCur == cur3) {
+                chargePro = 2
+            }
+            if (maxCur > cur1 && maxCur > cur2 && maxCur > cur3 && rows[0].chargePro >= 2) {
+                chargePro = 3
+                var minDif = maxCur - Math.max(cur1, cur2, cur3)
+                if (minDif > 5) {
+                    maxCur -= minDif -5
+                }
+                else {
+                    maxCur -= minDif
+                }
+                maxCur /= 10
+                setMaxCur(macADR, maxCur)
+                macADR = escape(macADR)
+                maxCur = maxCur < 0 ? escape(0) : escape(maxCur)
+                cur1 = cur1 < 0 ? escape(0) : escape(cur1/10)
+                cur2 = cur2 < 0 ? escape(0) : escape(cur2/10)
+                cur3 = cur3 < 0 ? escape(0) : escape(cur3/10)
+                sql = `update nodestatus set smaxCur = ${maxCur}, cmaxCur = ${cmaxCur}, Phases = ${phases}, 
+                chargePro = ${chargePro}, cur1 = ${cur1}, cur2 = ${cur2}, cur3 = ${cur3}, 
+                maxCur = ${maxCur} where id = ${id} and macADR = ${macADR};`
+                return dataExec(sql).then(updateData => {
+                    if (updateData.changes) {
+                        return sumManCur().then(val1 => {
+                            if(val1) {
+                                autoWork().then(val2 => {
+                                    if(val2) {
+                                        return true
+                                    }
+                                    return false
+                                })
+                            }
+                            return false
+                        })   
+                    }
+                })
+            }
         }
-        return false // id and macADR do not match or no connection(no currentvalue received)
+        maxCur = maxCur < 0 ? escape(0) : escape(maxCur/10)
+        macADR = escape(macADR)
+        cur1 = cur1 < 0 ? escape(0) : escape(cur1/10)
+        cur2 = cur2 < 0 ? escape(0) : escape(cur2/10)
+        cur3 = cur3 < 0 ? escape(0) : escape(cur3/10)
+        sql = `update nodestatus set cmaxCur = ${cmaxCur}, Phases = ${phases}, chargePro = ${chargePro},
+        cur1 = ${cur1}, cur2 = ${cur2}, cur3 = ${cur3}, maxCur = ${maxCur} where id = ${id} and macADR = ${macADR};`
+        return dataExec(sql).then(updateData =>{
+            if (updateData.changes > 0) {
+                return true 
+            }
+            return false // id and macADR do not match or no connection(no currentvalue received)
+        })
     })
 }
 
@@ -172,18 +223,18 @@ const infoUpdate = (id, macADR, Parent = null,
 
 // calculate the total current that are supplied to manual mode in each phase
 const sumManCur = () => {
-    // usedCur: the power is supplied to the connected EV. totalCur: the power should be supplied to the node.
-    var usedCur1 = 0
-    var usedCur2 = 0
-    var usedCur3 = 0
-    var totalCur1 = 0
-    var totalCur2 = 0
-    var totalCur3 = 0
-    let sql = `select id, macADR, smaxCur, sPhases, cmaxCur, workStatus
-    from nodestatus where workmode='manual' and connect = 1 and workStatus between 10 and 60 order by id;`
+    // manUsedCur: the power is supplied to the connected EV. manTotalCur: the power should be supplied to the node.
+    var manUsedCur1 = 0
+    var manUsedCur2 = 0
+    var manUsedCur3 = 0
+    var manTotalCur1 = 0
+    var manTotalCur2 = 0
+    var manTotalCur3 = 0
+    let sql = `select id, macADR, smaxCur, sPhases, cmaxCur, workStatus, chargePro from nodestatus 
+    where workmode='manual' and connect = 1 and workStatus between 10 and 60 order by id;`
     return queryData(sql).then(rows => {
         if(!rows[0]){ // No node in manual mode
-            sql = `update meshsetting set usedCur1=0, usedCur2=0, usedCur3=0, totalCur1=0, totalCur2=0, totalCur3=0;`
+            sql = `update meshsetting set manUsedCur1=0, manUsedCur2=0, manUsedCur3=0, manTotalCur1=0, manTotalCur2=0, manTotalCur3=0;`
             return dataExec(sql).then(updateData => {
                 if (updateData.changes > 0) {
                     return true
@@ -195,21 +246,21 @@ const sumManCur = () => {
         for (let i = 0; i < rows.length; i++) {
             if (rows[i].smaxCur > rows[i].cmaxCur && rows[i].cmaxCur>5) {
                 rows[i].smaxCur = rows[i].cmaxCur
-                sql = `update nodestatus set smaxCur = '${rows[i].cmaxCur}' where id = '${rows[i].id}' and macADR = '${rows[i].macADR}' `
+                sql = `update nodestatus set smaxCur = '${rows[i].cmaxCur}' where id = '${rows[i].id}' and macADR = '${rows[i].macADR}';`
                 dataExec(sql)
             }
             rows[i].Phases = rows[i].sPhases.toString()
             maxCur = rows[i].smaxCur
-            // when ccss is Ax -> wait Ev -> only calculate the totalCur
+            // when ccss is Ax -> wait Ev -> only calculate the manTotalCur
             if (rows[i].workStatus<20) {
                 if (rows[i].Phases.indexOf("1") >= 0) {
-                    totalCur1 += maxCur
+                    manTotalCur1 += maxCur
                 }
                 if (rows[i].Phases.indexOf("2") >= 0) {
-                    totalCur2 += maxCur
+                    manTotalCur2 += maxCur
                 }
                 if (rows[i].Phases.indexOf("3") >= 0) {
-                    totalCur3 += maxCur
+                    manTotalCur3 += maxCur
                 }
             }
             else if (rows[i].workStatus>=20) {
@@ -219,21 +270,21 @@ const sumManCur = () => {
                     setPhase(rows[i].macADR, rows[i].sPhases)
                 }
                 if (rows[i].Phases.indexOf("1") >= 0) {
-                    usedCur1 += maxCur
-                    totalCur1 += maxCur
+                    manUsedCur1 += maxCur
+                    manTotalCur1 += maxCur
                 }
                 if (rows[i].Phases.indexOf("2") >= 0) {
-                    usedCur2 += maxCur
-                    totalCur2 += maxCur
+                    manUsedCur2 += maxCur
+                    manTotalCur2 += maxCur
                 }
                 if (rows[i].Phases.indexOf("3") >= 0) {
-                    usedCur3 += maxCur
-                    totalCur3 += maxCur
+                    manUsedCur3 += maxCur
+                    manTotalCur3 += maxCur
                 }
             }
         }
-        sql = `update meshsetting set usedCur1 = ${usedCur1}, usedCur2 = ${usedCur2}, usedCur3 = ${usedCur3},
-        totalCur1 = ${totalCur1}, totalCur2 = ${totalCur2}, totalCur3 = ${totalCur3};`
+        sql = `update meshsetting set manUsedCur1 = ${manUsedCur1}, manUsedCur2 = ${manUsedCur2}, manUsedCur3 = ${manUsedCur3},
+        manTotalCur1 = ${manTotalCur1}, manTotalCur2 = ${manTotalCur2}, manTotalCur3 = ${manTotalCur3};`
         return dataExec(sql).then(updateData => {
             return true
         })
@@ -242,9 +293,12 @@ const sumManCur = () => {
 
 // For Node in auto workmode
 const autoWork = () => {
+    // var allUsedCur1 = 0
+    // var allUsedCur1 = 0
+    // var allUsedCur1 = 0
     return calRemain().then(remain => {
-        let sql = `select id, macADR, cmaxCur from nodestatus where workmode='auto'
-        and connect = 1 and workStatus between 20 and 60 order by cmaxCur;`
+        let sql = `select id, macADR, cmaxCur, smaxCur, sPhases, chargePro, workStatus from nodestatus where workmode='auto'
+        and connect = 1 and workStatus between 20 and 60 order by chargePro DESC, cmaxCur;`
         return queryData(sql).then(rows => {
             // calculate the available average Current and number of cars in auto mode
             var autoNum = rows.length
@@ -252,11 +306,32 @@ const autoWork = () => {
                 if(!autoNum) {
                     break
                 }
-                var bestResult =calBestCur(autoNum, rows[j].cmaxCur, remain)
-                setPhase(rows[j].macADR, Number(bestResult.Phases))
-                setMaxCur(rows[j].macADR, bestResult.maxCur)
-                remain = bestResult.remain
-                autoNum = bestResult.autoNum
+                if (rows[j].chargePro == 3 && rows[j].workStatus<40 && rows[j].workStatus>=30) {
+                    rows[j].sPhases = rows[j].sPhases.toString()
+                    if (rows[j].sPhases.indexOf("1") >= 0) {
+                        remain[1] -= rows[j].smaxCur
+                    }
+                    if (rows[j].sPhases.indexOf("2") >= 0) {
+                        remain[2] -= rows[j].smaxCur
+                    }
+                    if (rows[j].sPhases.indexOf("3") >= 0) {
+                        remain[3] -= rows[j].smaxCur
+                    }
+                    var totalRemain = calTotalRemain(remain[1],remain[2],remain[3])
+                    remain[0] = totalRemain.Phase
+                    remain[4] = totalRemain.CurSum
+                    autoNum--
+                }
+                else {
+                    var bestResult =calBestCur(autoNum, rows[j].cmaxCur, remain)
+                    setPhase(rows[j].macADR, Number(bestResult.Phases))
+                    setMaxCur(rows[j].macADR, bestResult.maxCur)
+                    sql = `update nodestatus set smaxCur = ${bestResult.maxCur}, sPhases = ${bestResult.Phases}
+                    where id = '${rows[j].id}' and macADR = '${rows[j].macADR}';`
+                    dataExec(sql)
+                    remain = bestResult.remain
+                    autoNum = bestResult.autoNum
+                }
             }
             return true
         })
@@ -270,9 +345,9 @@ const calRemain = () => {
         if(!rows[0]){
             return false // no connection with database
         }
-        var Cur1 = rows[0].wholeMax-rows[0].usedCur1
-        var Cur2 = rows[0].wholeMax-rows[0].usedCur2
-        var Cur3 = rows[0].wholeMax-rows[0].usedCur3
+        var Cur1 = rows[0].wholeMax-rows[0].manUsedCur1
+        var Cur2 = rows[0].wholeMax-rows[0].manUsedCur2
+        var Cur3 = rows[0].wholeMax-rows[0].manUsedCur3
         var totalRemain = calTotalRemain(Cur1,Cur2,Cur3)
         var CurSum = totalRemain.CurSum
         var Phase = totalRemain.Phase
@@ -458,7 +533,7 @@ const calBestCur = (autoNum, cmaxCur, remain) => {
         remain[3]-=maxCur
     }
 
-    totalRemain = calTotalRemain(remain[1],remain[2],remain[3])
+    var totalRemain = calTotalRemain(remain[1],remain[2],remain[3])
     remain[0] = totalRemain.Phase
     remain[4] = totalRemain.CurSum
     autoNum--
