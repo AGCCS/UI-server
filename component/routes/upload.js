@@ -79,6 +79,7 @@ router.post('/AVR', (req, res, next) => {
             }
             else if (mesJson.state === 'running') {
                 readInfo(macADR)
+                client.end()
             }
         }
         else if (mesJson.mtype === 'avrimg' && mesJson.avrcrc==='ok') {
