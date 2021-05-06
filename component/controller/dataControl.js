@@ -393,6 +393,26 @@ const calBigRemain = (Cur1, Cur2, Cur3) => {
     return {Cur, Phase}
 }
 
+// calculate the middle available remaining current and its phase
+const calMiddleRemain = (Cur1, Cur2, Cur3) => {
+    var maxCur = Math.max(Cur1, Cur2, Cur3)
+    var minCur = Math.min(Cur1, Cur2, Cur3)
+    var Phase = ''
+    var Cur = 0
+    if (Cur1 < maxCur && Cur1 > minCur) {
+        Cur = Cur1
+        Phase = '1'
+    }
+    else if (Cur2 < maxCur && Cur2 > minCur) {
+        Cur = Cur2
+        Phase = '2'
+    }
+    else if (Cur3 < maxCur && Cur3 > minCur) {
+        Cur = Cur3
+        Phase = '3'        
+    }
+    return {Cur, Phase}
+}
 // calculate the smallest available remaining current and its phase
 const calSmallRemain = (Cur1, Cur2, Cur3) => {
     var Cur = Cur1
@@ -427,7 +447,7 @@ const calBestCur = (autoNum, cmaxCur, remain) => {
         }
         autoNum--
 }
-    // case1: allocate the current as average current as possible
+    // case1: allocate the current as average current or cmaxCur
     for (let x = 0; x < remain[0].length; x++) {
             PhaseNum = remain[0].length-x
             phasesArray[0] = ''
@@ -474,46 +494,51 @@ const calBestCur = (autoNum, cmaxCur, remain) => {
                 break
             }
     }
-
-    // case2: one of the remaining current is too high so that the averageCur is too high
-    curArray[1] = calSmallRemain(remain[1],remain[2],remain[3]).Cur
-    phasesArray[1] = remain[0]
+    
+    // case 2,3,4: allocate current according to the value of one phase
+    // 2: biggest current, one of the remaining current is too high so that only this phase should be count on
+    bigRemain = calBigRemain(remain[1],remain[2],remain[3])
+    phasesArray[1] = bigRemain.Phase
+    curArray[1] = bigRemain.Cur
     if (curArray[1] > cmaxCur) {
         curArray[1] = cmaxCur
     }
 
-    // case3: based on the result of case1, after allocation, one remaining current is less than 5A
-    // and thus the average current will lead to a lower efficiency
-    if (phasesArray[0].length) {
-        curArray[2] = remain[Number(phasesArray[0][0])]
-    }
-    else {
-        curArray[2] = 0
-    }
-    phasesArray[2] = phasesArray[0]
-    for (let j = 1; j < phasesArray[0].length; j++) {
-        if ( (curArray[2]) > remain[Number(phasesArray[0][j])]) { 
-            curArray[2] = remain[Number(phasesArray[0][j])]
-        }
-    }
-    if (curArray[2]-curArray[0]>=5) {
-        curArray[2] = 0
-    }
-    else if (averageCur < curArray[2]*phasesArray[2].length){
-        averageCur = curArray[2]*phasesArray[2].length
-    }
-
-    // case4: one of the remaining current is too high so that only this phase should be count on
-    bigRemain = calBigRemain(remain[1],remain[2],remain[3])
-    phasesArray[3] = bigRemain.Phase
-    curArray[3] = bigRemain.Cur
+    // 3: middle
+    middleRemain = calMiddleRemain(remain[1],remain[2],remain[3])
+    curArray[2] = middleRemain.Cur
+    phasesArray[2] = bigRemain.Phase+middleRemain.Phase
+    
+    // 4: smallest, one of the remaining current is too high and makes the averageCur too high
+    curArray[3] = calSmallRemain(remain[1],remain[2],remain[3]).Cur
+    phasesArray[3] = remain[0]
     if (curArray[3] > cmaxCur) {
         curArray[3] = cmaxCur
     }
-  
+
+    // case5: based on the result of case1, after allocation, one remaining current is less than 5A
+    // and thus the average current will lead to a lower efficiency, need to recalculate the average current
+    if (phasesArray[0].length) {
+        curArray[4] = remain[Number(phasesArray[0][0])]
+    }
+    else {
+        curArray[4] = 0
+    }
+    phasesArray[4] = phasesArray[0]
+    for (let j = 1; j < phasesArray[0].length; j++) {
+        if ( (curArray[4]) > remain[Number(phasesArray[0][j])]) { 
+            curArray[4] = remain[Number(phasesArray[0][j])]
+        }
+    }
+    if (curArray[4]-curArray[0]>=5) {
+        curArray[4] = 0
+    }
+    else if (averageCur < curArray[4]*phasesArray[4].length){
+        averageCur = curArray[4]*phasesArray[4].length
+    }
 
 
-    // select the most effectiv current value and phases
+    // select the most effectiv current value and phases without 
     maxCur = curArray[0]
     Phases = phasesArray[0]
     for (let i = 1; i < curArray.length; i++) {
