@@ -1,7 +1,7 @@
 ## express-api-server for project AGCCS-CTRL22
-This programm aims to develop the server and API-interface for the user interface of project AGCCS-CTRL22. It also contains the compiled user interface, which is running on port 8071 (could be edited in the app.js L26).
+This programm aims to develop the server and API-interface for the user interface of project AGCCS-CTRL22. It also integrates a web-UI for control, which runs on port 8071 and is compiled by the Vue-Program in the repository [monitor](https://github.com/AGCCS/monitor).
 
-The whole work is developed based on nodejs and uses express as web framework. Now it contains the following 3 main functions:
+The whole work is developed based on nodejs and uses express as the web framework. Now it contains the following 3 main functions:
 
 1. Contact nodes with MQTT. This function is mainly compiled by pubcontrol.js, subcontrol.js and initcontrol.js. The needed mqtt server should be created by raspberry Pi with mosquitto (default adrress is 192.168.5.1 and port is 1884, which is defined in configuration.js in forlder 'conf').
 2. Read data and information of node from the database or store data and imformation that is sent by nodes via mqtt.
