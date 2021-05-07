@@ -1,5 +1,5 @@
 ## express-api-server for project AGCCS-CTRL22
-This programm aims to develop the server and API-interface for the user interface of project AGCCS-CTRL22. It also integrates a web-UI for control, which runs on port 8071 and is compiled by the Vue-Program in the repository [monitor](https://github.com/AGCCS/monitor).
+This programm aims to develop the server and API-interface for the web-UI of project AGCCS-CTRL22, which is compield by the Vue-Program in the repository [monitor](https://github.com/AGCCS/monitor). In order to simplify the installation process and make it easier to test the performance of our server, the built web-UI in [dist](./dist) is integrated and runs on port 8071.
 
 The whole work is developed based on nodejs and uses express as the web framework. Now it contains the following 3 main functions:
 
