@@ -90,7 +90,7 @@ app.use(function(err, req, res, next) {
 });
 
 // set up mqtt server
-var adeasSettings = {
+var aedesSettings = {
   persistence: aedesPersistenceRedis({
       port: 6379,          // Redis port
       host: '127.0.0.1',   // Redis host
@@ -106,7 +106,7 @@ var adeasSettings = {
 }
 var mqttPort = 1884
 var wsPort = 9001
-var mqttServer = new aedesMqtt(adeasSettings, mqttPort, wsPort)
+var mqttServer = new aedesMqtt(aedesSettings, mqttPort, wsPort)
 // subCB(subscriptions, client), pubCB(packet, client), conCB(client), disconCB(client)
 // mqttServer.pub(pubCB) mqttServer.con(conCB) mqttServer.discon(disconCB)
 // function subCB (subscriptions, client) {
