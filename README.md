@@ -2,8 +2,18 @@
 This programm aims to develop the server and API-interface for the web-UI of project AGCCS-CTRL22, which is compield by the Vue-Program in the repository [monitor](https://github.com/AGCCS/monitor). In order to simplify the installation process and facilitate testing the performance of the server the performance of our server, the built web-UI is integrated in [./dist](./dist) and runs on port 8071. This repository is organised as follows:
 
 The whole work is developed based on nodejs and uses express as the web framework. Now it contains the following 3 main functions:
-* [./bin](./bin) Default file *www* from express, which determines the port of the API-interface 3000.
-* [app.js](app.js) Default main executable file from express. The router, 
+* [./bin](./bin): Default file *www* from express, which determines the port of the API-interface 3000.
+* [app.js](app.js): Default main executable file from express. The integration of web-UI, the sessionstorage of cookies, which uses redis for storage, the router, the mqtt server, which is implemented by [aedes](https://github.com/moscajs/aedes), and the heatbeat read task of mqtt.
+* [./conf](./conf): Declaration of some important or frequently used configurations like configurations of redis and mqtt-client, default username and password.
+* [./dist](./dist): The built web-UI as described above.
+* [./logs](./logs): Log files such as error logs.
+* [./public](./public): Path of the static file. Mainly it is used to store the firmware uploaded by the UI.
+* [./component](./component): Components that implement all main functions.
+> * [./component/controller]([./component/controller)
+> * [./component/midware](./component/midware)
+> * [./component/model](./component/model)
+> * [./component/routes](./component/routes)
+> * [./component/tool](./component/tool)
 
 
 1. Contact nodes with MQTT. This function is mainly compiled by pubcontrol.js, subcontrol.js and initcontrol.js. The needed mqtt server should be created by raspberry Pi with mosquitto (default adrress is 192.168.5.1 and port is 1884, which is defined in configuration.js in forlder 'conf').
