@@ -9,11 +9,11 @@ The whole work is developed based on nodejs and uses express as the web framewor
 * [./logs](./logs): Log files such as error logs.
 * [./public](./public): Path of the static file. Mainly it is used to store the firmware uploaded by the UI.
 * [./component](./component): Components that implement all main functions.
-> * [controller]([./component/controller)
-> * [midware](./component/midware)
-> * [model](./component/model)
-> * [routes](./component/routes)
-> * [tool](./component/tool)
+> * [controller]([./component/controller): Implementation of basic operations related to router, database and mqtt.
+> * [midware](./component/midware): Currently there is only middleware that verifies whether the user is the administrator.
+> * [model](./component/model): Currently there is only message model that should be sent to the UI.
+> * [routes](./component/routes): Router for the requests sent by the UI such as GET, POST and PUT.
+> * [tool](./component/tool): Implementation of tools such as redis, mqtt and the database, sqlite3. 
 
 
 1. Contact nodes with MQTT. This function is mainly compiled by pubcontrol.js, subcontrol.js and initcontrol.js. The needed mqtt server should be created by raspberry Pi with mosquitto (default adrress is 192.168.5.1 and port is 1884, which is defined in configuration.js in forlder 'conf').
