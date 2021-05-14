@@ -15,11 +15,12 @@ The whole work is developed based on nodejs and uses express as the web framewor
 > * [routes](./component/routes): Router for the requests sent by the UI such as GET, POST and PUT.
 > * [tool](./component/tool): Implementation of tools such as redis, mqtt and the database, sqlite3. 
 
+### Implementation Outline
 
-1. Contact nodes with MQTT. This function is mainly compiled by pubcontrol.js, subcontrol.js and initcontrol.js. The needed mqtt server should be created by raspberry Pi with mosquitto (default adrress is 192.168.5.1 and port is 1884, which is defined in configuration.js in forlder 'conf').
-2. Read data and information of node from the database or store data and imformation that is sent by nodes via mqtt.
-3. Upload the firmware of ESP32 (which now is specific m5stick). The uploaded firmware will be stored in the folder 'public'. So in order to operate successfully, the parameter 'dirName' in the configuration.js(in folder 'conf') should be the same path of the folder 'public'. The ESP32 should be able send a http-get-request to the your ipadress:8071. 
-4. Create subuser to check all the data and change the password of users. Subuser has no authority to operate.
+1. Establishment of mqtt service (see [aedesMqtt](./component/tool/aedesMqtt.js)) and its related applications of charging nodes (see [subControl](./component/controller/subControl.js) and [pubControl](./component/controller/pubControl.js)). The callback functions related to the actions of the mqtt-client like connection, disconnection and publication are encapsulated to meet possible future needs. Currently they have been tested but not applied to the program. The default adrress of mqtt-server is 192.168.5.1 and port is 1884, which is defined in [configuration](./conf/configuration.js)
+2. Establishment of database (see [sqlite](./component/tool/sqlite.js)). Two functions *dataExec* and *queryData* are encapsulated to operate the database. The former is used to modify data. The latter is used to query data. 
+3. Web-API and router to handle the request from web-UI. The API runs on port 3000. In the programm of web-UI it is defined as *baseURL 'http://192.168.5.1:3000/api/'*. There is 4 routers, *nodes*, *mesh*, *upload* and *users*. All the post and put requests except for login and password modification will be checked by the middleware *admincheck* in [adminCheck](./component/midware/adminCheck.js) to ensure that only the administrator has the authority to operate. All the subuser can only read the data of mesh and nodes.
+4. 
 
 ### Guidelines for Installation
 
