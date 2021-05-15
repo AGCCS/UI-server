@@ -15,7 +15,7 @@ The whole work is developed based on nodejs and uses express as the web framewor
 > * [routes](./component/routes): Router for the requests sent by the UI such as GET, POST and PUT.
 > * [tool](./component/tool): Implementation of tools such as redis, mqtt and the database, sqlite3. 
 
-### Implementation Outline
+### Key Features
 
 1. Establishment of mqtt service (see [aedesMqtt](./component/tool/aedesMqtt.js)) and its related applications of charging nodes (see [subControl](./component/controller/subControl.js) and [pubControl](./component/controller/pubControl.js)). The callback functions related to the actions of the mqtt-client like connection, disconnection and publication are encapsulated to meet possible future needs. Currently they have been tested but not applied to the program. The default adrress of mqtt-server is 192.168.5.1 and port is 1884, which is defined in [configuration](./conf/configuration.js)
 2. Establishment of database (see [sqlite](./component/tool/sqlite.js)). Two functions *dataExec* and *queryData* are encapsulated to operate the database. The former is used to modify data. The latter is used to query data. 
