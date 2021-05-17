@@ -20,7 +20,7 @@ This programm aims to develop the server and API-interface for the web-UI of pro
 2. Establishment of database (see [sqlite](./component/tool/sqlite.js)). Two functions *dataExec* and *queryData* are encapsulated to operate the database. The former is used to modify data. The latter is used to query data. 
 3. Web-API and router to handle the request from web-UI. The API runs on port 3000. In the programm of web-UI it is defined as *baseURL 'http://192.168.5.1:3000/api/'*. There is 4 routers, *nodes*, *mesh*, *upload* and *users*. All the post and put requests except for login and password modification will be checked by the middleware *admincheck* in [adminCheck](./component/midware/adminCheck.js) to ensure that only the administrator has the authority to operate. All the subuser can only read the data of mesh and nodes.
 4. Some basic requirements of web applications like *redis* and *logger* are integrated in the programm. But currently there are only related applications and no more development.
-<img src="./public/images/model.png" alt="model" width=15%>
+<img src="./public/images/model.png" alt="model" width=85%>
 
 ### Guidelines for Installation
 
