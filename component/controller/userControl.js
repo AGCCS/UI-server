@@ -46,9 +46,6 @@ const changePWD = (username, newpassword) => {
 }
 
 const addUser = (username, password) => {
-    if (username == 'admin') {
-        return false
-    }
     username = escape(username)
     password = escape(password)
     password = `'${genPassword(password)}'`
