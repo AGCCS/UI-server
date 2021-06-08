@@ -49,7 +49,7 @@ router.post('/addUser', adminCheck, (req, res, next) => {
     )}
     return res.json(
       new ErrorModel(meta= {'msg': 'Failed to add the new user',
-                            'status': 500})
+                            'status': 400})
     )
   })
 });

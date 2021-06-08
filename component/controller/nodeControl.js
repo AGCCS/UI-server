@@ -120,7 +120,7 @@ const changeNodeSetting = (id, macADR, smaxCur = null, workmode, sPhases = null)
                     // The given current value to be allocated may exceed the capacity of mesh
                     if (restCur1<0 || restCur2<0 || restCur3<0) {
                         if (minRemain<5) {
-                            return -3 // No current can be allocated in the given phase
+                            return -2 // No current can be allocated in the given phase
                         }
                         // Try to set the Value of smaxCur as the minimum remaining Current
                         sql = `update nodestatus set workmode=${workmode}, smaxCur = ${minRemain},
@@ -187,7 +187,7 @@ const changeNodeSetting = (id, macADR, smaxCur = null, workmode, sPhases = null)
                     // The current to be allocated may exceed the maximum total current of mesh
                     if (remain[1]<0 || remain[2]<0 || remain[3]<0) {
                         if (minRemain<5) {
-                            return -3 // No current can be allocated in the given phase
+                            return -2 // No current can be allocated in the given phase
                         }
                         // Set the Value of smaxCur as the minimum remaining Current
                         sql = `update nodestatus set workmode=${workmode}, smaxCur = ${minRemain},

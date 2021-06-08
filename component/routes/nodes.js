@@ -58,8 +58,8 @@ router.put('/status', adminCheck, (req, res, next) => {
         let model
         switch (val) {
           case -1: model = new ErrorModel({'msg': 'Failed, cause node cannot work now', 'status': 404}); break
-          case -2: model = new ErrorModel({'msg': 'Failed, cause no valid remaining current in all phases', 'status': 406}); break
-          case -3: model = new ErrorModel({'msg': 'Failed, cause no valid remaining current in given parameters', 'status': 402}); break
+          case -2: model = new ErrorModel({'msg': 'Failed, cause no valid remaining current in given parameters', 'status': 402}); break
+          case -3: model = new ErrorModel({'msg': 'Failed, cause no valid remaining current in all phases', 'status': 406}); break
           case 1: model = new SuccessModel({'msg': 'successfully change the setting the node', 'status': 200}); break
           case 2: model = new SuccessModel({'msg': 'Settings are adjusted to avoid exceeding the maximum current', 'status': 201}); break
         }

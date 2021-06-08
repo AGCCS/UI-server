@@ -57,11 +57,9 @@ router.post('/AVR', adminCheck, (req, res, next) => {
               
     client.on('connect', function () {
         client.publish('/DEMESH/root/control', cmd, {qos:1})
-	console.log('cmd is: ', cmd)
     })
     client.on('message', function (topic,message) {
         var mesJson = JSON.parse(message)
-	console.log('node res: ', mesJson)
         if (mesJson.mtype === 'avrota') {
             if(mesJson.state === 'recimg') {
                 let avrdata = Buffer.from(firmware.slice(avraddr, avraddr+128), 'binary')
@@ -79,7 +77,6 @@ router.post('/AVR', adminCheck, (req, res, next) => {
                     "avrcrc": crcNum
                 })
                 client.publish('/DEMESH/root/control', mes, {qos:1})
-		console.log('cmd is: ', mes)
             }
             else if (mesJson.state === 'running') {
                 readInfo(macADR)
