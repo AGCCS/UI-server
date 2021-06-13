@@ -82,8 +82,8 @@ let nodestatusSql = "CREATE TABLE if not exists nodestatus(id integer primary ke
 nodestatusSql += "macADR VARCHAR(18), nodeName VARCHAR(25), workStatus SMALLINT, maxCur SMALLINT, cmaxCur SMALLINT, "
 nodestatusSql += "smaxCur SMALLINT DEFAULT 0, workmode VARCHAR(10) DEFAULT 'auto', connect BOOLEAN, chargePro SMALLINT DEFAULT -1, "
 nodestatusSql += "Cur1 SMALLINT, Cur2 SMALLINT, Cur3 SMALLINT, Phases SMALLINT, sPhases SMALLINT DEFAULT 0, Parent VARCHAR(24), "
-nodestatusSql += "Rssi SMALLINT, Layer SMALLINT, Plat SMALLINT, Version VARCHAR(8), Board VARCHAR(45), avrVer VARCHAR(8)), "
-nodestatusSql += "UNIQUE (id, macADR, nodeName);"
+nodestatusSql += "Rssi SMALLINT, Layer SMALLINT, Plat SMALLINT, Version VARCHAR(8), Board VARCHAR(45), avrVer VARCHAR(8), "
+nodestatusSql += "UNIQUE (id, macADR, nodeName));"
 
 chargingpark.createTable(userTableSql)
 chargingpark.createTable(meshsettingSql)
