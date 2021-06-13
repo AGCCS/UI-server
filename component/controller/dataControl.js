@@ -298,7 +298,7 @@ const autoWork = () => {
     // var allUsedCur1 = 0
     return calRemain().then(remain => {
         let sql = `select id, macADR, cmaxCur, smaxCur, sPhases, chargePro, workStatus from nodestatus where workmode='auto'
-        and connect = 1 and workStatus between 20 and 60 order by chargePro DESC, cmaxCur;`
+        and connect = 1 and workStatus between 20 and 40 order by chargePro DESC, cmaxCur;`
         return queryData(sql).then(rows => {
             // calculate the available average Current and number of cars in auto mode
             var autoNum = rows.length
@@ -564,8 +564,6 @@ const calBestCur = (autoNum, cmaxCur, remain) => {
     autoNum--
     return {Phases, maxCur, remain, autoNum}
 }
-
-
 
 module.exports = {
     macReg,
