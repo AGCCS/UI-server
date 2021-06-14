@@ -135,7 +135,7 @@
 
 ## 1.3. Mesh
 
-### 1.3.1. Query Mesh Setting
+### 1.3.1. Query Settings of Mesh
 
 - Request url：mesh/setting
 - Method：get
@@ -149,7 +149,14 @@
 
 | Parameter   | description | comment     |
 | -------- | -----------    | --------------- |
-| |                |                 |
+| id | id of mesh setting | Kept for possible setting template in the future |
+| wholeMax | Maximum current in each phase of the entire charging station | |
+| manUsedCur1 | Current consumed by nodes in manual mode in phase 1 | Not shown, but kept |
+| manUsedCur2 | Current consumed by nodes in manual mode in phase 2 | Not shown, but kept |
+| manUsedCur3 | Current consumed by nodes in manual mode in phase 3 | Not shown, but kept |
+| manTotalCur1 | Current allocated to nodes in manual mode in phase 1 | Not shown, but kept |
+| manTotalCur2 | Current allocated to nodes in manual mode in phase 2  | Not shown, but kept |
+| manTotalCur3 | Current allocated to nodes in manual mode in phase 3  | Not shown, but kept |
 
 - Successful example
 
@@ -173,49 +180,30 @@
 }
 ```
 
-### 1.3.2. 添加用户
+### 1.3.2. Change Settings of Mesh
 
-- 请求路径：users
-- 请求方法：post
-- 请求参数
+- Request url：mesh/setting
+- Method：put
+- Request Parameters:
 
-| 参数名   | 参数说明 | 备注     |
-| -------- | -------- | -------- |
-| username | 用户名称 | 不能为空 |
-| password | 用户密码 | 不能为空 |
-| email    | 邮箱     | 可以为空 |
-| mobile   | 手机号   | 可以为空 |
+| Parameter| description | comment  |
+| -------- | --------       | -------- |
+| wholeMax | Maximum current in each phase of the entire charging station |  |
 
-- 响应参数
+- Response data:
 
-| 参数名   | 参数说明    | 备注 |
-| -------- | ----------- | ---- |
-| id       | 用户 ID     |      |
-| rid      | 用户角色 ID |      |
-| username | 用户名      |      |
-| mobile   | 手机号      |      |
-| email    | 邮箱        |      |
+| Parameter   | description | comment     |
+| -------- | -----------    | --------------- |
 
-- 响应数据
+- Successful example
 
 ```json
 {
-    "data": {
-        "id": 28,
-        "username": "tige1200",
-        "mobile": "test",
-        "type": 1,
-        "openid": "",
-        "email": "test@test.com",
-        "create_time": "2017-11-10T03:47:13.533Z",
-        "modify_time": null,
-        "is_delete": false,
-        "is_active": false
-    },
     "meta": {
-        "msg": "用户创建成功",
-        "status": 201
-    }
+        "msg": "successfully change the setting of mesh",
+        "status": 202
+    },
+    "errno": 0
 }
 ```
 
