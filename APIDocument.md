@@ -60,8 +60,9 @@
     "data": {
         "username": "admin1",
         "password": "****",
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJ1c2VybmFtZSI6ImFkbWluMSIsImlhdCI6MTYyM
-        zY3ODQ1NywiZXhwIjoxNjI3Mjc4NDU3fQ.wrO3YGmbg9zLwIP8KjIWhng3DowDmWWjJKqoFBWLxaQ"
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJ1c2Vyb
+        mFtZSI6ImFkbWluMSIsImlhdCI6MTYyMzY3ODQ1NywiZXhwIjoxNjI3Mjc4NDU3fQ.
+        wrO3YGmbg9zLwIP8KjIWhng3DowDmWWjJKqoFBWLxaQ"
     },
     "meta": {
         "msg": "login successful",
