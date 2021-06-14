@@ -3,7 +3,7 @@ var jwt = require('jsonwebtoken')
 const {jwtKey} = require('../../conf/configuration')
 
 module.exports = (req, res, next) => {
-    if (!res.headers.authorization) {
+    if (!req.headers.authorization) {
         return res.json( new ErrorModel(meta= {'msg': 'No authorization in headers', 'status': 401}))
     }
     jwt.verify(req.headers.authorization, jwtKey, (err, data) => {
