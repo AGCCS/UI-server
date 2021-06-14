@@ -153,8 +153,14 @@ const statusUpdate = (id, macADR, ccss) => {
         if (ccss<10 && ccss>=0) {
             setPhase(macADR, 0)
             setMaxCur(macADR, 0)
-            sql = `update nodestatus set workStatus = ${escape(ccss)}, workmode = 'auto', smaxCur = 0, sPhases = 0
-            where id = ${id} and macADR = ${escape(macADR)};`
+            if (ccss == 0){
+                sql = `update nodestatus set workStatus = ${escape(ccss)}, workmode = 'auto', smaxCur = 0, sPhases = 0
+                where id = ${id} and macADR = ${escape(macADR)};`
+            }
+            else { 
+                sql = `update nodestatus set workStatus = ${escape(ccss)}, smaxCur = 0, sPhases = 0
+                where id = ${id} and macADR = ${escape(macADR)};`
+            }
         }
         // When wait EV
         else {
