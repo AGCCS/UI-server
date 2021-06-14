@@ -1,6 +1,6 @@
-# 1. API Interfaces Dokumentation for UI-server of AGCCS
+# API Interfaces Dokumentation for UI-server of AGCCS
 
-## 1.1. API Interfaces Description
+## 1. API Interfaces Description
 
 - Basic URL template：`http://127.0.0.1:3000/api/`
 - The server has enabled CORS cross-domain support
@@ -9,14 +9,14 @@
 - Use HTTP Status Code to identify status
 - Return data in JSON format
 
-### 1.1.1. Supported Request Method
+### 1.1. Supported Request Method
 
 - GET（SELECT）：request data.
 - POST（CREATE）：Create new resource。
 - PUT（UPDATE）：Update the resource。
 - DELETE（DELETE）：Delete the resource.
 
-### 1.1.2. General Response Status description
+### 1.2. General Response Status description
 
 | *Status Code* | *Meaning*                | *Comment*                                              |
 | -------- | --------------------- | --------------------------------------------------- |
@@ -30,11 +30,11 @@
 | 404      | NOT FOUND             | Resource cannot support the request            |
 | 500      | INTERNAL SERVER ERROR | Unexpected Error happened in the server        |
 
-------
+<div style="page-break-after: always;"></div>
 
-## 1.2. Users
+## 2. Users
 
-### 1.2.1. Interface for login authentication
+### 2.1. Login Authentication
 
 - Request url：users/login
 - Method：post
@@ -70,7 +70,7 @@
 }
 ```
 
-### 1.2.2. Interface for Password Change
+### 2.2. Password Change
 
 - Request url：users/password
 - Method：post
@@ -100,7 +100,7 @@
 }
 ```
 
-### 1.2.1. Interface for Add Subuser
+### 2.3. Add Subuser
 
 - Request url：users/addUser
 - Method：post
@@ -129,9 +129,11 @@
 }
 ```
 
-## 1.3. Mesh
+<div style="page-break-after: always;"></div>
 
-### 1.3.1. Query Settings of Mesh
+## 3. Mesh
+
+### 3.1. Query Settings of Mesh
 
 - Request url：mesh/setting
 - Method：get
@@ -176,7 +178,7 @@
 }
 ```
 
-### 1.3.2. Change Settings of Mesh
+### 3.2. Change Settings of Mesh
 
 - Request url：mesh/setting
 - Method：put
@@ -203,7 +205,7 @@
 }
 ```
 
-### 1.3.3. Mesh Data Initialization
+### 3.3. Mesh Data Initialization
 
 - Request url：mesh/init
 - Method：delete
@@ -231,9 +233,11 @@
 }
 ```
 
-## 1.4. Nodes
+<div style="page-break-after: always;"></div>
 
-### 1.4.1. Query Information List of Nodes
+## 4. Nodes
+
+### 4.1. Query Information List of Nodes
 
 - Request url：nodes/list
 - Method：get
@@ -312,7 +316,7 @@
 }
 ```
 
-### 1.4.2. Query Information of one Particular Node
+### 4.2. Query Information of one Particular Node
 
 - Request url：nodes/list
 - Method：get
@@ -363,7 +367,7 @@
 }
 ```
 
-### 1.4.3. Query Working Status of Nodes
+### 4.3. Query Working Status of Nodes
 
 - Request url：nodes/status
 - Method：get
@@ -454,7 +458,7 @@
 }
 ```
 
-### 1.4.4. Query Working Status of one Paticular Node
+### 4.4. Query Working Status of one Paticular Node
 
 - Request url：nodes/status
 - Method：get
@@ -511,7 +515,7 @@
 }
 ```
 
-### 1.4.6. Operation Button of one Paticular Node
+### 4.5. Operation Button of one Paticular Node
 
 - Request url：nodes/buttonB
 - Method：put
@@ -539,7 +543,7 @@
 }
 ```
 
-### 1.4.7. Blink one Paticular Node
+### 4.6. Blink one Paticular Node
 
 - Request url：nodes/Blink
 - Method：put
@@ -567,7 +571,7 @@
 }
 ```
 
-### 1.4.8. Stop Blinking 
+### 4.7. Stop Blinking 
 
 - Request url：nodes/noBlink
 - Method：put
@@ -595,9 +599,11 @@
 }
 ```
 
-## 1.5. Upload
+<div style="page-break-after: always;"></div>
 
-### 1.5.1. File Upload
+## 5. Upload
+
+### 5.1. File Upload
 
 - Request url：upload/
 - Method：post
@@ -624,7 +630,7 @@
     "errno": 0
 }
 ```
-### 1.5.2. ESP32 Firmware Upload
+### 5.2. ESP32 Firmware Upload
 
 - Request url：upload/ESP32
 - Method：post
@@ -653,7 +659,7 @@
 }
 ```
 
-### 1.5.3. AVR Firmware Upload
+### 5.3. AVR Firmware Upload
 
 - Request url：upload/AVR
 - Method：post
