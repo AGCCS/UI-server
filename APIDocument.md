@@ -60,7 +60,8 @@
     "data": {
         "username": "admin1",
         "password": "****",
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluMSIsImlhdCI6MTYyMzY3ODQ1NywiZXhwIjoxNjI3Mjc4NDU3fQ.wrO3YGmbg9zLwIP8KjIWhng3DowDmWWjJKqoFBWLxaQ"
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJ1c2VybmFtZSI6ImFkbWluMSIsImlhdCI6MTYyM
+        zY3ODQ1NywiZXhwIjoxNjI3Mjc4NDU3fQ.wrO3YGmbg9zLwIP8KjIWhng3DowDmWWjJKqoFBWLxaQ"
     },
     "meta": {
         "msg": "login successful",
@@ -85,7 +86,7 @@
 - Response data:
 
 | Parameter   | Description | Type |  Comment     |
-| -------- | -----------    | --------------- |
+| -------- | -----------    |-------- | --------------- |
 |  |  |  |  |
 
 - Successful example
@@ -99,6 +100,8 @@
     "errno": 0
 }
 ```
+
+<div style="page-break-after: always;"></div>
 
 ### 2.3. Add Subuser
 
@@ -177,6 +180,8 @@
     "errno": 0
 }
 ```
+
+<div style="page-break-after: always;"></div>
 
 ### 3.2. Change Settings of Mesh
 
@@ -323,7 +328,7 @@
 - Request Parameters:
 
 | Parameter| Description | Type |  Comment  |
-| -------- | --------       | -------- |
+| -------- | --------  |--------    | -------- |
 | id | Id of the node being queried | Id in the form of url query |
 
 - Response data:
@@ -366,6 +371,8 @@
     "errno": 0
 }
 ```
+
+<div style="page-break-after: always;"></div>
 
 ### 4.3. Query Working Status of Nodes
 
@@ -571,6 +578,8 @@
 }
 ```
 
+<div style="page-break-after: always;"></div>
+
 ### 4.7. Stop Blinking 
 
 - Request url：nodes/noBlink
@@ -658,6 +667,8 @@
     "errno": 0
 }
 ```
+
+<div style="page-break-after: always;"></div>
 
 ### 5.3. AVR Firmware Upload
 
