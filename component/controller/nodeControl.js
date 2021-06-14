@@ -11,7 +11,7 @@ const getNodesStatus = (id = {}) => {
         sql += `where id = ${id};`
         return queryData(sql).then(rows =>{
             if(rows[0]){
-                return rows[0]  // wrong password -> data is null
+                return rows[0]
             }
         })
     }
@@ -30,7 +30,7 @@ const getNodesList = (id = {}) => {
         sql += `where id = ${id};`
         return queryData(sql).then(rows =>{
             if (rows[0]) {
-                return rows[0]  // wrong password -> data is null
+                return rows[0]
             }
         })
     }

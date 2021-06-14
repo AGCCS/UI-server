@@ -73,15 +73,15 @@ let userTableSql = "CREATE TABLE if not exists user(username VARCHAR(25) NOT NUL
 userTableSql += "password VARCHAR(64) NOT NULL, PRIMARY KEY (username, password), UNIQUE (username));"
 
 let meshsettingSql = "CREATE TABLE if not exists meshsetting(id integer primary key autoincrement NOT NULL, "
-meshsettingSql += "wholeMax SMALLINT NOT NULL DEFAULT 100, manUsedCur1 SMALLINT NOT NULL DEFAULT 0, "
-meshsettingSql += "manUsedCur2 SMALLINT NOT NULL DEFAULT 0, manUsedCur3 SMALLINT NOT NULL DEFAULT 0, "
-meshsettingSql += "manTotalCur1 SMALLINT NOT NULL DEFAULT 0, manTotalCur2 SMALLINT NOT NULL DEFAULT 0, "
-meshsettingSql += "manTotalCur3 SMALLINT NOT NULL DEFAULT 0, UNIQUE (id));"
+meshsettingSql += "wholeMax SMALLINT NOT NULL DEFAULT 100, manUsedCur1 FLOAT(3) NOT NULL DEFAULT 0, "
+meshsettingSql += "manUsedCur2 FLOAT(3) NOT NULL DEFAULT 0, manUsedCur3 FLOAT(3) NOT NULL DEFAULT 0, "
+meshsettingSql += "manTotalCur1 FLOAT(3) NOT NULL DEFAULT 0, manTotalCur2 FLOAT(3) NOT NULL DEFAULT 0, "
+meshsettingSql += "manTotalCur3 FLOAT(3) NOT NULL DEFAULT 0, UNIQUE (id));"
 
 let nodestatusSql = "CREATE TABLE if not exists nodestatus(id integer primary key autoincrement NOT NULL, "
-nodestatusSql += "macADR VARCHAR(18), nodeName VARCHAR(25), workStatus SMALLINT, maxCur SMALLINT, cmaxCur SMALLINT, "
-nodestatusSql += "smaxCur SMALLINT DEFAULT 0, workmode VARCHAR(10) DEFAULT 'auto', connect BOOLEAN, chargePro SMALLINT DEFAULT -1, "
-nodestatusSql += "Cur1 SMALLINT, Cur2 SMALLINT, Cur3 SMALLINT, Phases SMALLINT, sPhases SMALLINT DEFAULT 0, Parent VARCHAR(24), "
+nodestatusSql += "macADR VARCHAR(18), nodeName VARCHAR(25), workStatus SMALLINT, maxCur FLOAT(3), cmaxCur FLOAT(3), "
+nodestatusSql += "smaxCur FLOAT(3) DEFAULT 0, workmode VARCHAR(10) DEFAULT 'auto', connect BOOLEAN, chargePro SMALLINT DEFAULT -1, "
+nodestatusSql += "Cur1 FLOAT(3), Cur2 FLOAT(3), Cur3 FLOAT(3), Phases SMALLINT, sPhases SMALLINT DEFAULT 0, Parent VARCHAR(24), "
 nodestatusSql += "Rssi SMALLINT, Layer SMALLINT, Plat SMALLINT, Version VARCHAR(8), Board VARCHAR(45), avrVer VARCHAR(8), "
 nodestatusSql += "UNIQUE (id, macADR, nodeName));"
 

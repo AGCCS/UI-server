@@ -10,7 +10,7 @@ router.get('/setting', (req, res, next) => {
   return result.then(MeshSetting => {
     if (MeshSetting.id !== 1) {
       return res.json (
-        new ErrorModel({'msg': 'Failed to get the setting of mesh', 'status': 400}, MeshSetting)
+        new ErrorModel({'msg': 'Failed to get the setting of mesh', 'status': 404}, MeshSetting)
       )}
     return res.json (
       new SuccessModel({'msg': 'successfully get the setting of mesh', 'status': 200}, MeshSetting)
@@ -36,7 +36,7 @@ router.put('/setting', adminCheck, (req, res, next) => {
 router.delete('/init', adminCheck, (req, res, next) => {
   meshInit().then(val => {
     if (val) {
-      return res.json( new SuccessModel({'msg': 'successfully initialized the mesh', 'status': 202})
+      return res.json( new SuccessModel({'msg': 'successfully initialized the mesh', 'status': 204})
     )}
     else {
       return res.json(

@@ -13,8 +13,13 @@ router.get('/list', (req, res, next) => {
   id = req.query.id
   const result = getNodesList(id)
   return result.then(NodesList => {
-      res.json (
-        new SuccessModel({'msg': 'successfully get the list of mesh', 'status': 200}, NodesList)
+    if (id) {
+      return res.json (
+        new SuccessModel({'msg': 'successfully get the information of node with id = '+id+'.', 'status': 200}, NodesList)
+      )
+    }
+      return res.json (
+        new SuccessModel({'msg': 'successfully get the list of nodes', 'status': 200}, NodesList)
       )
   })
 });
@@ -24,8 +29,13 @@ router.get('/status', (req, res, next) => {
   id = req.query.id
   const result = getNodesStatus(id)
   return result.then(nodeStatus => {
+    if (id) {
+      return res.json (
+        new SuccessModel({'msg': 'successfully get the status of node with id = '+id+'.', 'status': 200}, nodeStatus)
+      )
+    }
     return res.json (
-      new SuccessModel({'msg': 'successfully get the status of mesh', 'status': 200}, nodeStatus)
+      new SuccessModel({'msg': 'successfully get the status of nodes', 'status': 200}, nodeStatus)
     )
   })
 });
@@ -58,7 +68,7 @@ router.put('/status', adminCheck, (req, res, next) => {
         let model
         switch (val) {
           case -1: model = new ErrorModel({'msg': 'Failed, cause node cannot work now', 'status': 404}); break
-          case -2: model = new ErrorModel({'msg': 'Failed, cause no valid remaining current in given parameters', 'status': 402}); break
+          case -2: model = new ErrorModel({'msg': 'Failed, cause no valid remaining current in given parameters', 'status': 400}); break
           case -3: model = new ErrorModel({'msg': 'Failed, cause no valid remaining current in all phases', 'status': 406}); break
           case 1: model = new SuccessModel({'msg': 'successfully change the setting the node', 'status': 200}); break
           case 2: model = new SuccessModel({'msg': 'Settings are adjusted to avoid exceeding the maximum current', 'status': 201}); break
@@ -75,21 +85,21 @@ router.put('/status', adminCheck, (req, res, next) => {
 router.put('/buttonB', adminCheck, (req, res, next)=> {
   const {macADR} = req.body
   pressButtonB(macADR)
-  return res.json( new SuccessModel({'msg': 'successfully pressed button B remotely', 'status': 200}))
+  return res.json( new SuccessModel({'msg': 'successfully pressed the operation button remotely', 'status': 200}))
 });
 
 // function to blink the node
 router.put('/Blink', adminCheck, (req, res, next)=> {
   const {macADR} = req.body
   Blink(macADR)
-  return res.json( new SuccessModel({'msg': 'successfully pressed button B remotely', 'status': 200}))
+  return res.json( new SuccessModel({'msg': 'successfully blink the node remotely', 'status': 200}))
 });
 
 // function to stop blinking the node
 router.put('/noBlink', adminCheck, (req, res, next)=> {
   const {macADR} = req.body
   noBlink(macADR)
-  return res.json( new SuccessModel({'msg': 'successfully pressed button B remotely', 'status': 200}))
+  return res.json( new SuccessModel({'msg': 'successfully stop the node from blinking remotely', 'status': 200}))
 });
 
 

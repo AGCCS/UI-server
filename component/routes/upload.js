@@ -16,7 +16,7 @@ router.post('/', adminCheck, (req, res, next) => {
                 return new ErrorModel({'msg': err, 'status': 400})
             } 
             else{
-                return res.json( new SuccessModel({'msg': 'File ' + req.files[0].originalname +' uploaded successfully', 'status': 202})
+                return res.json( new SuccessModel({'msg': 'File ' + req.files[0].originalname +' uploaded successfully', 'status': 201})
             )}
         })
     })
@@ -35,7 +35,7 @@ router.post('/ESP32', adminCheck, (req, res, next) => {
         client.publish('/DEMESH/root/control', message, {qos:1})
         client.end()
     })
-    return res.json( new SuccessModel({'msg': 'ESP32 will download the Firmaware "'+board+'" v'+ver+' now.', 'status': 202})
+    return res.json( new SuccessModel({'msg': 'ESP32 will download the Firmaware "'+board+'" v1.4 now.', 'status': 201})
     )
 });
 
@@ -113,7 +113,7 @@ router.post('/AVR', adminCheck, (req, res, next) => {
             }
         }
     })
-    return res.json( new SuccessModel({'msg': 'Node ' + macADR + 'will download the Firmaware ' + fileName + 'now.', 'status': 202})
+    return res.json( new SuccessModel({'msg': 'Node ' + macADR + 'will download the Firmaware ' + fileName + 'now.', 'status': 201})
     )
 });
 
