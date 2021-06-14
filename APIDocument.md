@@ -72,6 +72,8 @@
 }
 ```
 
+<div style="page-break-after: always;"></div>
+
 ### 2.2. Password Change
 
 - Request url：users/password
@@ -151,7 +153,7 @@
 
 | Parameter   | Description | Type | Comment |
 | -------- | -----------    |-------- | --------------- |
-| id       | id of mesh setting | Number | Kept for possible setting template in the future |
+| id       | id of mesh setting | Number | Kept for possible setting template |
 | wholeMax | Maximum current in each phase of the entire charging station | Number |  |
 | manUsedCur1 | Current consumed by nodes in manual mode in phase 1 | Number | Not shown, but kept |
 | manUsedCur2 | Current consumed by nodes in manual mode in phase 2 | Number | Not shown, but kept |
@@ -210,6 +212,7 @@
     "errno": 0
 }
 ```
+<div style="page-break-after: always;"></div>
 
 ### 3.3. Mesh Data Initialization
 
@@ -218,7 +221,7 @@
 - Request Parameters:
 
 | Parameter| Description | Type |  Comment  |
-| -------- | --------       | -------- |
+| -------- | --------       | -------- |-------- |
 |  |  |  |  |
 
 - Response data:
@@ -268,6 +271,8 @@
 | Version | Version of firmware demesh       | String |  |
 | Board| Development board of nodes | String |  |
 | avrVer | Version of firmware ctrl22c       | String |  |
+
+<div style="page-break-after: always;"></div>
 
 - Successful example
 
@@ -322,6 +327,8 @@
 }
 ```
 
+<div style="page-break-after: always;"></div>
+
 ### 4.2. Query Information of one Particular Node
 
 - Request url：nodes/list
@@ -348,6 +355,8 @@
 | Board| Development board of the node | String |  |
 | avrVer | Version of firmware ctrl22c       | String |  |
 
+<div style="page-break-after: always;"></div>
+
 - Successful example
 
 ```json
@@ -373,7 +382,7 @@
 }
 ```
 
-<div style="page-break-after: always;"></div>
+
 
 ### 4.3. Query Working Status of Nodes
 
@@ -476,6 +485,8 @@
 | -------- | --------    | -------- | -------- |
 | id | Id of the node being queried | Number | Sent in the form of url query |
 
+<div style="page-break-after: always;"></div>
+
 - Response data:
 
 | Parameter   | Description | Type |  Comment     |
@@ -550,6 +561,8 @@
     "errno": 0
 }
 ```
+
+<div style="page-break-after: always;"></div>
 
 ### 4.6. Blink one Paticular Node
 
@@ -640,6 +653,9 @@
     "errno": 0
 }
 ```
+
+<div style="page-break-after: always;"></div>
+
 ### 5.2. ESP32 Firmware Upload
 
 - Request url：upload/ESP32
