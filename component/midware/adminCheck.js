@@ -11,7 +11,7 @@ module.exports = (req, res, next) => {
             next()
             return
         }
-        res.json( new ErrorModel(meta= {'msg': 'Users except Admin has only permission to read data',
+        return res.json( new ErrorModel(meta= {'msg': 'Users except Admin has only permission to read data',
         'status': 401}))
     })
 }

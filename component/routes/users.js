@@ -24,12 +24,12 @@ router.post('/password', (req, res, next) => {
   const checkresult = login(username, password)
   checkresult.then( data => {
     if(!data.username) {
-      return res.json(new ErrorModel(meta= {'msg':'wrong user info', 'status': 422})
+      return res.json(new ErrorModel(meta= {'msg':'wrong user info', 'status': 400})
       )}
     const result = changePWD(username, newPassword)
     return result.then(val => {
       if (val) {
-        return res.json( new SuccessModel(meta={'msg': 'successfully change password', 'status': 202})
+        return res.json( new SuccessModel(meta={'msg': 'successfully change password', 'status': 200})
       )}
       return res.json(
         new ErrorModel(meta= {'msg': 'Failed to change the password',
@@ -45,11 +45,11 @@ router.post('/addUser', adminCheck, (req, res, next) => {
   const result = addUser(subUsername, subPassword)
   return result.then(val => {
     if (val) {
-      return res.json( new SuccessModel(meta={'msg': 'successfully added the new user', 'status': 202})
+      return res.json( new SuccessModel(meta={'msg': 'successfully added the new user', 'status': 201})
     )}
     return res.json(
       new ErrorModel(meta= {'msg': 'Failed to add the new user',
-                            'status': 400})
+                            'status': 500})
     )
   })
 });

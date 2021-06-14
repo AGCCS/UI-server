@@ -8,7 +8,7 @@ const { getNodesStatus,
 const {pressButtonB, Blink, noBlink} = require('../controller/pubControl')
 const adminCheck = require('../midware/adminCheck')
 
-/* GET nodes listing. */
+/* GET nodes listing or the information of one paticular node with id. */
 router.get('/list', (req, res, next) => {
   id = req.query.id
   const result = getNodesList(id)

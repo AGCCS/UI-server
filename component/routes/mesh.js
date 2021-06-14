@@ -19,9 +19,9 @@ router.get('/setting', (req, res, next) => {
 });
 
 /* Post mesh setting. */
-router.post('/setting', adminCheck, (req, res, next) => {
-  const { wholeMax, safeMax } = req.body
-  const result = changeMeshSetting(wholeMax, safeMax)
+router.put('/setting', adminCheck, (req, res, next) => {
+  const { wholeMax } = req.body
+  const result = changeMeshSetting(wholeMax)
   return result.then(val => {
     if (val) {
       return res.json( new SuccessModel({'msg': 'successfully change the setting of mesh', 'status': 202})
@@ -33,16 +33,16 @@ router.post('/setting', adminCheck, (req, res, next) => {
 });
 
 /* initialize the whole mesh. */
-router.post('/init', adminCheck, (req, res, next) => {
+router.delete('/init', adminCheck, (req, res, next) => {
   meshInit().then(val => {
     if (val) {
       return res.json( new SuccessModel({'msg': 'successfully initialized the mesh', 'status': 202})
     )}
-    // else {
-    //   return res.json(
-    //     new ErrorModel({'msg': 'Failed to initialized the mesh', 'status': 500})
-    //   )
-    // }
+    else {
+      return res.json(
+        new ErrorModel({'msg': 'Failed to initialized the mesh or it is intialized', 'status': 500})
+      )
+    }
   })
 });
 

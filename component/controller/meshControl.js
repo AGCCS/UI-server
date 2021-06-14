@@ -5,7 +5,7 @@ const meshInit = () => {
     let sql =`delete from nodestatus;`
     return dataExec(sql).then(updateData => {
         if (updateData.changes <= 0) {
-            return false
+            return true
         }
         return true
     })
