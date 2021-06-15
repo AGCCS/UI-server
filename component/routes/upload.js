@@ -80,6 +80,7 @@ router.post('/AVR', adminCheck, (req, res, next) => {
             }
             else if (mesJson.state === 'running') {
                 readInfo(macADR)
+                console.log('Node ' + macADR + 'has downloaded the firmware ' + fileName)
                 client.end()
             }
         }
