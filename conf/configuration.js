@@ -10,7 +10,7 @@ if (env === 'dev') {
     
     MQTT_CONF = 'mqtt:192.168.5.1:1884'
     jwtKey = 'N27#K$5m_P[C'
-    dirName = '/home/pi/Loadstation/UI-server-2.0-demo/public'
+    dirName = '/home/pi/Loadstation/UI-server-2.4-demo/public'
     defaultUser = 'admin'
     defaultPwd = '123456'
 }
@@ -23,7 +23,7 @@ if (env === 'production') {
 
     MQTT_CONF = 'mqtt:192.168.5.1:1884'
     jwtKey = 'N27#K$5m_P[C'
-    dirName = '/home/pi/Loadstation/UI-server-2.0-demo/public'
+    dirName = '/home/pi/UI-server/public'
     defaultUser = 'admin'
     defaultPwd = '123456'
 }
