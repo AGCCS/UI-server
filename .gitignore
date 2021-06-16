@@ -8,3 +8,4 @@ logs/access.log
 *.log
 logs/err.log
 logs/out.log
+logs/err.log
