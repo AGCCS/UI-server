@@ -1,11 +1,13 @@
 {
     "apps": {
-        "name": "chargingpark-server",
+        "name": "AGCCS-server",
         "script": "./bin/www",
         "watch": true,
         "ignore_watch": [
             "node_modules",
-            "logs"
+            "logs",
+            "public",
+            "component/tool/dbFile"
         ],
         "error_file": "logs/err.log",
         "out_file": "logs/out.log",

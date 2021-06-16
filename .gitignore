@@ -4,3 +4,7 @@ public/demesh_m5stick_6_3.bin
 node_modules/
 component/db/dbFile/chargingpark.db
 component/db/dbFile/chargingpark.db
+logs/access.log
+*.log
+logs/err.log
+logs/out.log
