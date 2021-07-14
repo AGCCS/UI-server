@@ -307,6 +307,7 @@ const autoWork = () => {
                 if(!autoNum) {
                     break
                 }
+                // if the charging is about to end, no need to optimize its allocation, it releases space in nodeControl
                 if (rows[j].chargePro == 3 && rows[j].workStatus<40 && rows[j].workStatus>=30) {
                     rows[j].sPhases = rows[j].sPhases.toString()
                     if (rows[j].sPhases.indexOf("1") >= 0) {

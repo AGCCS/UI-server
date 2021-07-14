@@ -135,7 +135,7 @@ const changeNodeSetting = (id, macADR, smaxCur = null, workmode, sPhases = null)
                     }
                     // The current to be allocated is valid
                     else {
-                        // Set the Value of smaxCur as the given smaxCur
+                        // Set the Value of smaxCur as the given smaxCur for manual nodes
                         sql = `update nodestatus set workmode=${workmode}, smaxCur = ${escape(smaxCur)},
                         sPhases = ${escape(sPhases)} where id= ${id} and macADR = ${escape(macADR)};`
                         return dataExec(sql).then(updateData => {
