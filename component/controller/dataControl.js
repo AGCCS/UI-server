@@ -303,9 +303,13 @@ const autoWork = () => {
         return queryData(sql).then(rows => {
             // calculate the available average Current and number of cars in auto mode
             var autoNum = rows.length
+            var waitId = -1
             for (let j = 0; j < rows.length; j++) {
+                // set the power allocation to 0 for car that should wait for charging
                 if(!autoNum) {
-                    break
+                    setPhase(rows[j].macADR, 0)
+                    setMaxCur(rows[j].macADR, 0)
+                    continue
                 }
                 // if the charging is about to end, no need to optimize its allocation, it releases space in nodeControl
                 if (rows[j].chargePro == 3 && rows[j].workStatus<40 && rows[j].workStatus>=30) {
@@ -448,7 +452,7 @@ const calBestCur = (autoNum, cmaxCur, remain) => {
             break
         }
         autoNum--
-}
+    }
     // case1: allocate the current as average current or cmaxCur
     for (let x = 0; x < remain[0].length; x++) {
             PhaseNum = remain[0].length-x
