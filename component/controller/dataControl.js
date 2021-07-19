@@ -49,30 +49,26 @@ const getInfo = (macADR) => {
 const currentUpdate = (id, macADR ,maxCur, cmaxCur, phases, cur1, cur2, cur3) => {
     let sql = `select * from nodestatus where id = ${id} and macADR = '${macADR}';`
     return queryData(sql).then(rows => {
-        id = escape(id)
         cmaxCur = cmaxCur < 0 ? escape(0) : escape(cmaxCur/10)
         phases = escape(phases)
         // Judging the progress of charging. 
         // chargePro: -1: charging not started yet (default when ccss not Cx), 1: charging just started, the current rises
-        // 2: current has risen to the maximum current. 3: batter is almost full, current drop
+        // 2: current has risen to the maximum current. 3: battery is almost full, current drop.
         var chargePro = -1
+        // the difference between amaxCur and the biggest current value in percentage.
+        const curDiff = 1 - Math.max(cur1, cur2, cur3) / maxCur
         if (rows[0].workStatus <40 && rows[0].workStatus>=30) {
             if (rows[0].chargePro<=0) {
                 chargePro = 1
             }
-            // if (maxCur == cur1 || maxCur == cur2 || maxCur == cur3 && rows[0].chargePro == 1) {
-            if (maxCur == cur1 || maxCur == cur2 || maxCur == cur3) {
+            // if difference is below 15%, assuming reached the maximum
+            if (curDiff < 0.15) {
                 chargePro = 2
             }
-            if (maxCur > cur1 && maxCur > cur2 && maxCur > cur3 && rows[0].chargePro >= 2) {
+            // if has reached the maximum, and the difference is above 20%
+            if (curDiff > 0.2 && rows[0].chargePro >= 2) {
                 chargePro = 3
-                var minDif = maxCur - Math.max(cur1, cur2, cur3)
-                if (minDif > 5) {
-                    maxCur -= minDif -5
-                }
-                else {
-                    maxCur -= minDif
-                }
+                maxCur -= Math.min(5, curDiff * maxCur)
                 maxCur /= 10
                 setMaxCur(macADR, maxCur)
                 macADR = escape(macADR)
@@ -82,7 +78,7 @@ const currentUpdate = (id, macADR ,maxCur, cmaxCur, phases, cur1, cur2, cur3) =>
                 cur3 = cur3 < 0 ? escape(0) : escape(cur3/10)
                 sql = `update nodestatus set smaxCur = ${maxCur}, cmaxCur = ${cmaxCur}, Phases = ${phases}, 
                 chargePro = ${chargePro}, cur1 = ${cur1}, cur2 = ${cur2}, cur3 = ${cur3}, 
-                maxCur = ${maxCur} where id = ${id} and macADR = ${macADR};`
+                maxCur = ${maxCur} where id = ${escape(id)} and macADR = ${macADR};`
                 return dataExec(sql).then(updateData => {
                     if (updateData.changes) {
                         return sumManCur().then(val1 => {
@@ -106,7 +102,7 @@ const currentUpdate = (id, macADR ,maxCur, cmaxCur, phases, cur1, cur2, cur3) =>
         cur2 = cur2 < 0 ? escape(0) : escape(cur2/10)
         cur3 = cur3 < 0 ? escape(0) : escape(cur3/10)
         sql = `update nodestatus set cmaxCur = ${cmaxCur}, Phases = ${phases}, chargePro = ${chargePro},
-        cur1 = ${cur1}, cur2 = ${cur2}, cur3 = ${cur3}, maxCur = ${maxCur} where id = ${id} and macADR = ${macADR};`
+        cur1 = ${cur1}, cur2 = ${cur2}, cur3 = ${cur3}, maxCur = ${maxCur} where id = ${escape(id)} and macADR = ${macADR};`
         return dataExec(sql).then(updateData =>{
             if (updateData.changes > 0) {
                 return true 
@@ -126,10 +122,10 @@ const connectUpdate = (id, macADR, connect=false) => {
         sql = `update nodestatus set connect = ${connect} where id = ${id} and macADR = ${macADR};`
     }
     else {
-        // If one node lose connection, reset the workmode of node to auto
+        // If one node lose connection, reset all the data to default.
         connect = escape(connect)
         sql = `update nodestatus set connect = ${connect}, workmode = 'auto', Phases = 0, maxCur = 0, workStatus = 0,
-        cur1 = 0, cur2 = 0, cur3 = 0, cmaxCur = 0, sPhases = 0, smaxCur = 0 where id = ${id} and macADR = ${macADR};`
+        cur1 = 0, cur2 = 0, cur3 = 0, cmaxCur = 0, sPhases = 0, smaxCur = 0, chargePro = -1 where id = ${id} and macADR = ${macADR};`
     }
     return dataExec(sql).then(updateData => {
         return true
@@ -149,17 +145,24 @@ const statusUpdate = (id, macADR, ccss) => {
         if(ccss === rows[0].workStatus) {
             return true 
         }
-        // When charging ends up. reset workmode to auto, sphases and smaxCur to zero.
-        if (ccss<10 && ccss>=0) {
-            setPhase(macADR, 0)
-            setMaxCur(macADR, 0)
-            sql = `update nodestatus set workStatus = ${escape(ccss)}, workmode = 'auto', smaxCur = 0, sPhases = 0
-                where id = ${id} and macADR = ${escape(macADR)};`
-
-        }
-        // When wait EV
-        else {
-            sql = `update nodestatus set workStatus = ${escape(ccss)} where id = ${id} and macADR = ${escape(macADR)};`
+        const chargingStatus = Math.floor(ccss / 10)
+        // When the car is charging, only update status, ccss between 30 and 40. chargingStatus: 3.
+        // When charging ends up. reset settings to default. chargingStatus: 0
+        // When charging stops somehow. reset chargingPro to -1, default.
+        switch (chargingStatus) {
+            case 0:
+                setPhase(macADR, 0)
+                setMaxCur(macADR, 0)
+                sql = `update nodestatus set workStatus = ${escape(ccss)}, workmode = 'auto', smaxCur = 0, sPhases = 0,
+                    chargePro = -1 where id = ${id} and macADR = ${escape(macADR)};`
+                break;
+            case 3:
+                sql = `update nodestatus set workStatus = ${escape(ccss)} where id = ${id} and macADR = ${escape(macADR)};`
+                break;
+            default:
+                sql = `update nodestatus set workStatus = ${escape(ccss)}, chargePro = -1
+                    where id = ${id} and macADR = ${escape(macADR)};`
+                break;
         }
         return dataExec(sql).then(updateData => {
             if(!updateData.changes) {
@@ -220,6 +223,10 @@ const infoUpdate = (id, macADR, Parent = null,
         }
         return false // id and macADR do not match or no connection(no currentvalue received)
     })
+}
+
+const chargeProUpdate = (id, macADR, chargePro) => {
+
 }
 
 // calculate the total current that are supplied to manual mode in each phase
@@ -570,6 +577,8 @@ const calBestCur = (autoNum, cmaxCur, remain) => {
     autoNum--
     return {Phases, maxCur, remain, autoNum}
 }
+
+
 
 module.exports = {
     macReg,
