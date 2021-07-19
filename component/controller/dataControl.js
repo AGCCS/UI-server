@@ -225,10 +225,6 @@ const infoUpdate = (id, macADR, Parent = null,
     })
 }
 
-const chargeProUpdate = (id, macADR, chargePro) => {
-
-}
-
 // calculate the total current that are supplied to manual mode in each phase
 const sumManCur = () => {
     // manUsedCur: the power is supplied to the connected EV. manTotalCur: the power should be supplied to the node.
