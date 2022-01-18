@@ -6,10 +6,10 @@ const { getNodesStatus,
         getNodesList,
         changeNodeSetting} = require('../controller/nodeControl')
 const {pressButtonB, Blink, noBlink} = require('../controller/pubControl')
-const adminCheck = require('../midware/adminCheck')
+const { adminCheck, userCheck } = require('../midware/adminCheck')
 
 /* GET nodes listing or the information of one paticular node with id. */
-router.get('/list', (req, res, next) => {
+router.get('/list', userCheck, (req, res, next) => {
   id = req.query.id
   const result = getNodesList(id)
   return result.then(NodesList => {
@@ -25,7 +25,7 @@ router.get('/list', (req, res, next) => {
 });
 
 /* GET nodes status. */
-router.get('/status', (req, res, next) => {
+router.get('/status', userCheck, (req, res, next) => {
   id = req.query.id
   const result = getNodesStatus(id)
   return result.then(nodeStatus => {

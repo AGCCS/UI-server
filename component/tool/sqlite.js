@@ -20,7 +20,13 @@ DB.SqliteDB = function(file){
 // create table
 DB.SqliteDB.prototype.createTable = function(sql){
     DB.db.serialize(function(){
-        DB.db.run(sql, function(err){
+        let request = sql
+        let parameter = []
+        if (Array.isArray(sql) && sql.length > 1) {
+          request = sql.shift()
+          parameter = sql
+        }
+        DB.db.run(request, parameter, function(err){
             if(null != err){
                 console.log("Error Message:" + err.message + " ErrorNumber:" + err.errno);
                 return;
@@ -32,7 +38,13 @@ DB.SqliteDB.prototype.createTable = function(sql){
 // update and insert data into table
 DB.SqliteDB.prototype.dataExec = function(sql){
     const promise = new Promise((resolve, reject) => {
-        DB.db.run(sql, function(err) {
+        let request = sql
+        let parameter = []
+        if (Array.isArray(sql) && sql.length > 1) {
+          request = sql.shift()
+          parameter = sql
+        }
+        DB.db.run(request, parameter, function(err) {
         if(null != err){
             reject(err)
         }
@@ -45,7 +57,13 @@ DB.SqliteDB.prototype.dataExec = function(sql){
 // query data from table
 DB.SqliteDB.prototype.queryData = function(sql){
     const promise = new Promise((resolve, reject) => {
-        DB.db.all(sql, function(err, rows) {
+        let request = sql
+        let parameter = []
+        if (Array.isArray(sql) && sql.length > 1) {
+          request = sql.shift()
+          parameter = sql
+        }
+        DB.db.all(request, parameter, function(err, rows) {
         if(null != err){
             reject(err)
         }
@@ -89,7 +107,7 @@ chargingpark.createTable(userTableSql)
 chargingpark.createTable(meshsettingSql)
 chargingpark.createTable(nodestatusSql)
 
-const adminPWD = genPassword(mysql.escape('123456'))
+const adminPWD = genPassword('123456')
 let userInitSql = `insert into user(username, password) values('admin', '${adminPWD}');`
 chargingpark.dataExec(userInitSql)
 

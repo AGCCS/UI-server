@@ -5,14 +5,13 @@ const {jwtKey} = require('../../conf/configuration')
 
 const login = (username, password) => {
     var content = {username: username}
-    username = escape(username)
-    password = escape(password)
 
     // generate the secret password from origin password
     password = genPassword(password)
 
-    const sql = `select * from user where password='${password}' and username=${username};`
-    return queryData(sql).then(userinfo =>{
+    const sql = `select * from user where password=? and username=?`
+    
+    return queryData([sql, password, username]).then(userinfo =>{
         if(userinfo[0]){
         var token = jwt.sign(content, jwtKey, {
             expiresIn: 1 * 60 * 60 * 1000 // 24小时过期,以s作为单位
@@ -29,15 +28,12 @@ const login = (username, password) => {
 }
 
 const changePWD = (username, newpassword) => {
-    username = escape(username)
-    newpassword = escape(newpassword)
-    
     // generate the secret password from origin password
-    newpassword = `'${genPassword(newpassword)}'`
+    newpassword = genPassword(newpassword)
 
-    let sql = `update user set password=${newpassword} where username=${username};`
+    let sql = `update user set password=? where username=?;`
     
-    return dataExec(sql).then(updateData =>{
+    return dataExec([sql, newpassword, username]).then(updateData =>{
         if (updateData.changes > 0) {
             return true
         }
@@ -46,11 +42,9 @@ const changePWD = (username, newpassword) => {
 }
 
 const addUser = (username, password) => {
-    username = escape(username)
-    password = escape(password)
-    password = `'${genPassword(password)}'`
-    let sql = `insert into user (username, password) values (${username}, ${password});`
-    return dataExec(sql).then(updateData =>{
+    password = genPassword(password)
+    let sql = `insert into user (username, password) values (?, ?);`
+    return dataExec([sql, username, password]).then(updateData =>{
         if (updateData.changes > 0) {
             return true
         }
