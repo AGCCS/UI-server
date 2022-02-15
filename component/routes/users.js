@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 const { SuccessModel, ErrorModel } = require('../model/resModel')
 const {login, changePWD, addUser} = require('../controller/userControl')
-const adminCheck = require('../midware/adminCheck');
+const { adminCheck, userCheck } = require('../midware/adminCheck')
 
 // log in 
 router.post('/login', (req, res, next) => {
@@ -19,7 +19,7 @@ router.post('/login', (req, res, next) => {
 });
 
 /* change the password */
-router.post('/password', (req, res, next) => {
+router.post('/password', userCheck, (req, res, next) => {
   const {username, password, newPassword} = req.body
   const checkresult = login(username, password)
   checkresult.then( data => {

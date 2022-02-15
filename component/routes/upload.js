@@ -6,7 +6,7 @@ const { SuccessModel, ErrorModel } = require('../model/resModel')
 const {readInfo} = require('../controller/subControl')
 var mqtt = require('mqtt')
 const {MQTT_CONF, dirName} = require('../../conf/configuration')
-const adminCheck = require('../midware/adminCheck');
+const { adminCheck, userCheck } = require('../midware/adminCheck')
 
 router.post('/', adminCheck, (req, res, next) => {
     var des_file = dirName + "/" + req.files[0].originalname; //destination folder and name of file

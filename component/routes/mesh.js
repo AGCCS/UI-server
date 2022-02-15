@@ -2,10 +2,10 @@ var express = require('express');
 var router = express.Router();
 const { SuccessModel, ErrorModel } = require("../model/resModel")
 const { getMeshSetting, changeMeshSetting, meshInit } = require('../controller/meshControl')
-const adminCheck = require('../midware/adminCheck')
+const { adminCheck, userCheck } = require('../midware/adminCheck')
 
 /* GET mesh setting. */
-router.get('/setting', (req, res, next) => {
+router.get('/setting', userCheck, (req, res, next) => {
   const result = getMeshSetting()
   return result.then(MeshSetting => {
     if (MeshSetting.id !== 1) {
